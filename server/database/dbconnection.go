@@ -20,25 +20,7 @@ func EstablishDBConnection() {
 	err = DB.Ping()
 	if err != nil {
 		fmt.Println("No se conectó la base de datos: ", err)
+		return
 	}
-
 	fmt.Println("Conexión a la Base de Datos con exito!")
-
-	rows, err := DB.Query("SELECT id, username FROM user")
-	if err != nil {
-		fmt.Println("Conexion no se pudo hacer: ", err)
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var id int
-		var username string
-
-		err := rows.Scan(&id, &username)
-		if err != nil {
-			fmt.Println("No se pudo leer las filas: ", err)
-		}
-
-		fmt.Printf("ID: %d, Nombre: %s\n", id, username)
-	}
 }
