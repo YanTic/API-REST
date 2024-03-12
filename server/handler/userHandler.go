@@ -2,8 +2,10 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+	"server/jwt"
 	"server/payload/response"
 	"server/service"
 
@@ -11,6 +13,10 @@ import (
 )
 
 func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
+	if !verifyTokenHandler(w, r) {
+		return
+	}
+
 	users, err := service.GetUsers()
 	if err != nil {
 		log.Println("ERROR: No se enviaron los usuarios: ", err)
@@ -33,6 +39,10 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUserByIdHandler(w http.ResponseWriter, r *http.Request) {
+	if !verifyTokenHandler(w, r) {
+		return
+	}
+
 	id := mux.Vars(r)["id"]
 	user, err := service.GetUserById(id)
 	if err != nil {
@@ -56,6 +66,10 @@ func GetUserByIdHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
+	if !verifyTokenHandler(w, r) {
+		return
+	}
+
 	var newUser response.User
 	json.NewDecoder(r.Body).Decode(&newUser)
 	_, err := service.CreateUser(newUser)
@@ -72,6 +86,10 @@ func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
+	if !verifyTokenHandler(w, r) {
+		return
+	}
+
 	var newUser response.User
 	json.NewDecoder(r.Body).Decode(&newUser)
 	userId := mux.Vars(r)["id"]
@@ -90,6 +108,10 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
+	if !verifyTokenHandler(w, r) {
+		return
+	}
+
 	userId := mux.Vars(r)["id"]
 
 	err := service.DeleteUser(userId)
@@ -103,4 +125,26 @@ func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Usuario eliminado con exito!"))
+}
+
+// Funciona para verificar la cabecera Authorization y el Token que envia el user para usar el handler
+func verifyTokenHandler(w http.ResponseWriter, r *http.Request) bool {
+	// Se verifica que la solicitud tenga una cabecera Authorization con un JWT valido
+	tokenString := r.Header.Get("Authorization")
+	if tokenString == "" {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("Falta la cabecera Authorization"))
+		return false
+	}
+	tokenString = tokenString[len("Bearer "):] // Se elimina el Bearer del token (Bearer eyJhbGciOiJ...)
+
+	// Se verifica el token enviado
+	err := jwt.VerifyToken(tokenString)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte(fmt.Sprintf("Token invalido | %v", err)))
+		return false
+	}
+
+	return true
 }

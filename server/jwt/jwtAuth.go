@@ -9,6 +9,7 @@ import (
 
 var secretKey = []byte("secret-key")
 var emisor = "ingesis.uniquindio.edu.co"
+var SUB string
 
 func CreateToken(username string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -22,14 +23,14 @@ func CreateToken(username string) (string, error) {
 		return "", err
 	}
 
+	SUB = username
 	return tokenString, err
 }
 
-func VerifyToken(tokenString string, username string) error {
+func VerifyToken(tokenString string) error {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return secretKey, nil
 	})
-
 	if err != nil {
 		return err
 	}
@@ -43,8 +44,8 @@ func VerifyToken(tokenString string, username string) error {
 	if claims["iss"] != emisor {
 		return fmt.Errorf("ISS (emisor) incorrecto")
 	}
-	fmt.Printf("sub: %s | username: %s\n", claims["sub"], username)
-	if claims["sub"] != username {
+	fmt.Printf("sub: %s | username: %s\n", claims["sub"], SUB)
+	if claims["sub"] != SUB {
 		return fmt.Errorf("SUB (usuario) incorrecto")
 	}
 

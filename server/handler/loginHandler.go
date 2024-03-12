@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	jwt "server/jwt"
+	"server/payload/response"
+	"server/service"
 )
 
 type User struct {
@@ -16,21 +18,37 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	// Con esto se le dice al cliente que espera recibir datos en formato JSON
 	w.Header().Set("Content-Type", "application/json")
 
-	var u User
+	var u response.User
 	json.NewDecoder(r.Body).Decode(&u)
 	fmt.Printf("Valores enviados por JSON %v", u)
 
 	if u.Username == "" || u.Password == "" {
-		http.Error(w, "Usuario y contraseña son obligatorios", http.StatusBadRequest)
+		http.Error(w, "Usuario y Contraseña son obligatorios", http.StatusBadRequest)
 	} else {
-		tokenString, err := jwt.CreateToken(u.Username)
-		if err != nil {
-			http.Error(w, "Token couldn't be created", http.StatusInternalServerError)
+
+		if service.VerifyIdentity(u.Username, u.Password) {
+			tokenString, err := jwt.CreateToken(u.Username)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				w.Write([]byte(fmt.Sprint("Token couldn't be created", http.StatusInternalServerError)))
+				return
+			}
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte(tokenString))
 			return
 		}
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, tokenString)
 	}
+
+	w.WriteHeader(http.StatusBadRequest)
+	w.Write([]byte("Error: No se pudo hacer Login"))
+}
+
+func RecoverPassword(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func UpdateUserPassword(w http.ResponseWriter, r *http.Request) {
+
 }
 
 func SaludoHandler(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +66,7 @@ func SaludoHandler(w http.ResponseWriter, r *http.Request) {
 	tokenString = tokenString[len("Bearer "):] // Se elimina el Bearer del token (Bearer eyJhbGciOiJ...)
 
 	// Se verifica el token enviado
-	err := jwt.VerifyToken(tokenString, usuario)
+	err := jwt.VerifyToken(tokenString)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		fmt.Fprint(w, "Token invalido | ", err)
