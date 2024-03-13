@@ -10,13 +10,14 @@ import (
 )
 
 func main() {
+	// docker run --rm -p 4453:3306 database-api
 	Database.EstablishDBConnection()
 
 	router := mux.NewRouter()
 
 	router.HandleFunc("/", handler.LoginHandler).Methods("POST")
-	router.HandleFunc("/password/{email}", handler.RecoverPassword).Methods("GET")
-	router.HandleFunc("/password", handler.UpdateUserPassword).Methods("POST")
+	router.HandleFunc("/password", handler.RecoverPasswordHandler).Methods("GET")
+	router.HandleFunc("/password/{id}", handler.UpdateUserPasswordHandler).Methods("PATCH")
 
 	usersRouter := router.PathPrefix("/users").Subrouter()
 	usersRouter.HandleFunc("/", handler.GetUsersHandler).Methods("GET")

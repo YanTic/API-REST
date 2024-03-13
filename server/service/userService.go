@@ -66,7 +66,7 @@ func UpdateUser(user response.User, idUser string) (response.User, error) {
 	_, err := database.DB.Exec("UPDATE user SET username = ?, password = ?, email = ? WHERE id = ?",
 		user.Username, user.Password, user.Email, idUser)
 	if err != nil {
-		log.Println("ERROR AL CONSULTAR LA BASE DE DATOS", http.StatusInternalServerError)
+		log.Println("ERROR AL ACTUALIZAR EN LA BASE DE DATOS", http.StatusInternalServerError)
 		return response.User{}, err
 	}
 
