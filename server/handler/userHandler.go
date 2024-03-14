@@ -8,6 +8,7 @@ import (
 	"server/jwt"
 	"server/payload/response"
 	"server/service"
+	"strconv"
 
 	"github.com/gorilla/mux"
 )
@@ -17,7 +18,21 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	users, err := service.GetUsers()
+	// No se puedo usar :c
+	// offset, _ := strconv.Atoi(mux.Vars(r)["offset"])
+	// pageSize, _ := strconv.Atoi(mux.Vars(r)["pagesize"])
+
+	query := r.URL.Query()
+	offset, _ := strconv.Atoi(query.Get("offset"))
+	pageSize, _ := strconv.Atoi(query.Get("pagesize"))
+
+	// Si no se mandan los valores de la paginación
+	if query.Get("offset") == "" || query.Get("pagesize") == "" {
+		offset = 1
+		pageSize = 10
+	}
+
+	users, err := service.GetUsers(offset, pageSize)
 	if err != nil {
 		log.Println("ERROR: No se enviaron los usuarios: ", err)
 		w.WriteHeader(http.StatusBadRequest)

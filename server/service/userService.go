@@ -5,10 +5,12 @@ import (
 	"net/http"
 	"server/database"
 	"server/payload/response"
+	"strconv"
 )
 
-func GetUsers() ([]response.User, error) {
-	rows, err := database.DB.Query("SELECT * FROM user")
+func GetUsers(offset, pageSize int) ([]response.User, error) {
+	rows, err := database.DB.Query("SELECT * FROM user ORDER BY id LIMIT " + strconv.Itoa(pageSize) + " OFFSET " + strconv.Itoa(offset))
+
 	if err != nil {
 		log.Println("ERROR AL CONSULTAR LA BASE DE DATOS", http.StatusInternalServerError)
 		return nil, err
