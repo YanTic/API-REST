@@ -2,6 +2,15 @@ version: '3'
 services:
   database:
     build: ./database
+    healthcheck: # Se verifica que la bd ya esté lista para ejecutar el contenedor del servidor
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -pexample"]
+      interval: 10s
+      retries: 5
+  server:
+    build: ./server
     ports:
-      - 4453:3306
-      
+      - 80:80
+    depends_on:
+      - database
+    environment:
+      - DATABASE=database:3306

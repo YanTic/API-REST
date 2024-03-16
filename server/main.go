@@ -28,7 +28,7 @@ func main() {
 
 	servidor := &http.Server{
 		Handler: router,
-		Addr:    "127.0.0.1:80",
+		Addr:    ":80",
 	}
 
 	log.Fatal(servidor.ListenAndServe())
