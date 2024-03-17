@@ -9,22 +9,120 @@ servers:
 
 tags:
   - name: user
-    description: User sub-route where an authenticated user can use the differrent operations supported by the API
+    description: Endpoint where an authenticated user can use the differrent operations supported by the API
+  - name: password
+    description: Endpoint where an user can use recover his password
+  - name: login
+    description: Endpoint where an user can Login
 
 paths:
+  /:
+    post:
+      tags:
+        - login
+      summary: POST method to Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BodyUserLoginPost'
+        required: true
+      responses:
+        200:
+          description: (OK) Login Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessUserPost'
+        400:
+          description: Error StatusBadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unsuccess'
+
+  /password:
+    get:
+      tags:
+        - password
+      summary: Recover password (returns token)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BodyRecoverPasswordGet'
+        required: true
+      responses:
+        200:
+          description: (OK) Recover password successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessRecoverPassword' 
+        400:
+          description: Error StatusBadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unsuccess'
+
+  /password/{id}:
+    patch:
+      tags:
+        - password
+      summary: Update password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BodyUpdatePasswordPatch'
+        required: true
+      responses:
+        200:
+          description: (OK) Password updated successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessRecoverPassword' # Dejo el mismo porque hacer otro es otro igual, yo me entiendo :c
+        400:
+          description: Error StatusBadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unsuccess'
+
   /users:
     get:
       tags:
         - user
       summary: Get all users
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/token'
       responses:
+        200:
+          description: (OK) Users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BodyUserGetAll'
+        400:
+          description: Error StatusBadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unsuccess'
         
     post:
       tags:
         - user
       summary: Create user
+      security:
+        - BearerAuth: []
       parameters:
         - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/token'
       requestBody:
         content:
           application/json:
@@ -43,27 +141,83 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Unsuccess'          
+                $ref: '#/components/schemas/Unsuccess'
 
   /users/{id}:
     get:
       tags:
         - user
       summary: Get user by Id
+      security:
+        - BearerAuth: []
       parameters:
         - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/token'
+      responses:
+        200:
+          description: (OK) User
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessUserGetUser'
+        400:
+          description: Error StatusBadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unsuccess'
+      
     put:
       tags:
         - user
       summary: Update user  
+      security:
+        - BearerAuth: []
       parameters:
         - $ref: '#/components/parameters/id'  
+        - $ref: '#/components/parameters/token'        
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BodyUserPost'
+        required: true
+      responses:
+        200:
+          description: (OK) User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessUserPost'
+        400:
+          description: Error StatusBadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unsuccess'
+
     delete:
       tags:
         - user
       summary: Delete user
+      security:
+        - BearerAuth: []
       parameters:
         - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/token'
+      responses:
+        200:
+          description: (OK) User deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessUserDelete'
+        400:
+          description: Error StatusBadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unsuccess'
 
 components:
   parameters:
@@ -74,7 +228,38 @@ components:
       required: true
       schema:
         type: string
+    token:
+      name: token
+      in: header
+      description: JWT authentication token
+      required: true
+      schema:
+        type: string
   schemas:
+    BodyUserLoginPost:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username
+        password:
+          type: string
+          description: User's password
+
+    BodyRecoverPasswordGet:
+      type: object
+      properties:
+        email:
+          type: string
+          description: User's email
+
+    BodyUpdatePasswordPatch:
+      type: object
+      properties:
+        password:
+          type: string
+          description: New user's password
+
     BodyUserPost: 
       type: object
       properties:
@@ -88,9 +273,44 @@ components:
           type: string
           description: User's email
 
+    BodyUserGetAll:
+      type: object
+  
     SuccessUserPost:
       type: string
+
+    SuccessRecoverPassword:
+      type: string
     
+    SuccessUserGetAll: 
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username
+        password:
+          type: string
+          description: User's password
+        email:
+          type: string
+          description: User's email
+
+    SuccessUserGetUser:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username
+        password:
+          type: string
+          description: User's password
+        email:
+          type: string
+          description: User's email
+
+    SuccessUserDelete:
+      type: string
+
     Unsuccess:
       type: object
       properties:
