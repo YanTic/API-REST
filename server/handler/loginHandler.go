@@ -36,8 +36,22 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte(fmt.Sprint("Token couldn't be created", http.StatusInternalServerError)))
 				return
 			}
+
+			// Se construye la respuesta en string, como se pide en el jwt-schema.json
+			responseString := map[string]string{"token": tokenString}
+
+			// Se codifica la respuesta en JSON
+			// Esto se hizo porque para hacer el testing con cucumber, se necesita
+			// validar el schema del JWT Token (ver jwt-schema.json en schemas/)
+			responseJSON, err := json.Marshal(responseString)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				w.Write([]byte(fmt.Sprintf("Error al codificar la respuesta JSON: %v", err)))
+				return
+			}
+
 			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(tokenString))
+			w.Write(responseJSON)
 			return
 		}
 	}

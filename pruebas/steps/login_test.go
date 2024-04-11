@@ -15,6 +15,8 @@ import (
 var url string
 var createUserURL string
 
+// go test -v steps/login_test.go
+
 func setConfigs() {
 	url = JsonReader("config-file.json", "API.baseUrl")
 	createUserURL = JsonReader("config-file.json", "API.createUser")
@@ -81,8 +83,8 @@ func laAPIRespondeElTokenJWTDeAutenticacion() error {
 	tokenschema := gojsonschema.NewStringLoader(string(schemaBytes))
 	responseSchema := gojsonschema.NewStringLoader(string(apiResponse.Body))
 
-	print("tokenschema:", string(schemaBytes))
-	print("responseSchema:", string(apiResponse.Body))
+	// print("tokenschema:", string(schemaBytes))
+	// print("responseSchema:", string(apiResponse.Body))
 
 	result, err := gojsonschema.Validate(responseSchema, tokenschema)
 	if err != nil {
