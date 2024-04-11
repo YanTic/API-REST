@@ -1,0 +1,12 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "JWT Token Schema",
+    "type": "object",
+    "properties": {
+        "token": {
+            "type": "string",
+            "description": "JWT Token generado por el servidor en string"
+        }
+    },
+    "required": ["token"]
+}
