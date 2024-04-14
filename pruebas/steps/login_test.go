@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/cucumber/godog"
@@ -12,36 +13,33 @@ import (
 	"github.com/xeipuuv/gojsonschema"
 )
 
-var url string
-var createUserURL string
-
-// go test -v steps/login_test.go
-
-func setConfigs() {
-	url = JsonReader("config-file.json", "API.baseUrl")
-	createUserURL = JsonReader("config-file.json", "API.createUser")
-}
-
-// Estructura para representar el estado de la respuesta de la API
+// Estructura para representar la respuesta de la API
 type APIResponse struct {
 	StatusCode int
 	Body       []byte
 }
 
 var (
-	apiResponse  *APIResponse
-	errorMessage string
-	statusCode   int
+	url          string
+	loginUserUrl string
+	requestBody  string // Esta variable contiene los datos que se envian a la API
+
+	apiResponse *APIResponse
 )
+
+// go test -v steps/login_test.go
+
+func setConfigs() {
+	url = JsonReader("config-file.json", "API.baseUrl")
+	loginUserUrl = JsonReader("config-file.json", "API.loginUserUrl")
+}
 
 // Función para enviar una solicitud POST a la API utilizando Resty
 func elUsuarioHaceLaPeticionPOSTALaRuta(ruta string) error {
-	requestBody := JsonReader("request-body.json", "data")
-
 	resp, err := resty.New().R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(requestBody).
-		Post(createUserURL)
+		Post(loginUserUrl)
 	if err != nil {
 		return err
 	}
@@ -66,7 +64,7 @@ func laAPIRespondeConUnStatusCode(codigo int) error {
 
 // Función para verificar que la API responde con un mensaje de error específico
 func laAPIRespondeConUnMensajeDeErrorIndicandoQue(mensaje string) error {
-	if string(apiResponse.Body) != mensaje {
+	if strings.TrimSpace(string(apiResponse.Body)) != strings.TrimSpace(mensaje) {
 		return fmt.Errorf("el mensaje de error esperado es '%s', pero se recibió '%s'", mensaje, string(apiResponse.Body))
 	}
 	return nil
@@ -104,14 +102,22 @@ func laAPIRespondeElTokenJWTDeAutenticacion() error {
 }
 
 // Función para verificar que no se envía un dato de logueo
+// TODO: TERMINAR
 func noEnviaUnDatoDeLogueo(campo string) error {
-	// Aquí puedes implementar la lógica para verificar que no se envía el dato de logueo indicado
+	if campo == "username" {
+		requestBody = JsonReader("request-body.json", "data-nouser")
+	} else {
+		requestBody = JsonReader("request-body.json", "data-nopass")
+	}
+
+	// Este print, se ejecuta dos veces, porque el .feature tiene dos valores en la tabla
+	// print("noEnviaUnDatoDeLogueo:", requestBody)
 	return nil
 }
 
 // Función para proporcionar los datos de acceso
 func proporcionaLosDatosAcceso() error {
-	// Aquí puedes implementar la lógica para proporcionar los datos de acceso
+	requestBody = JsonReader("request-body.json", "data")
 	return nil
 }
 
@@ -122,13 +128,13 @@ func unUsuarioRegistradoEnLaBaseDeDatos() error {
 
 // Inicializar el contexto de la prueba
 func InitializeScenario(ctx *godog.ScenarioContext) {
+	ctx.Step(`^Un usuario registrado en la Base de Datos$`, unUsuarioRegistradoEnLaBaseDeDatos)
+	ctx.Step(`^proporciona los datos acceso$`, proporcionaLosDatosAcceso)
 	ctx.Step(`^El usuario hace la peticion POST a la ruta "([^"]*)"$`, elUsuarioHaceLaPeticionPOSTALaRuta)
 	ctx.Step(`^La API responde con un mensaje de error indicando que "([^"]*)"$`, laAPIRespondeConUnMensajeDeErrorIndicandoQue)
 	ctx.Step(`^La API responde con un Status Code (\d+)$`, laAPIRespondeConUnStatusCode)
 	ctx.Step(`^La API responde el token JWT de autenticacion$`, laAPIRespondeElTokenJWTDeAutenticacion)
 	ctx.Step(`^no envia un dato de logueo "([^"]*)"$`, noEnviaUnDatoDeLogueo)
-	ctx.Step(`^proporciona los datos acceso$`, proporcionaLosDatosAcceso)
-	ctx.Step(`^Un usuario registrado en la Base de Datos$`, unUsuarioRegistradoEnLaBaseDeDatos)
 }
 
 func TestMain(m *testing.M) {
@@ -162,7 +168,7 @@ func TestMain(m *testing.M) {
 func JsonReader(pathOfFile, pathOfData string) (result string) {
 	jsonFile, err := os.Open(pathOfFile)
 	if err != nil {
-		fmt.Errorf("Couldn't read the file in path %s and data in JSON path %s", pathOfFile, pathOfData)
+		fmt.Printf("Couldn't read the file in path %s and data in JSON path %s", pathOfFile, pathOfData)
 	}
 	defer jsonFile.Close()
 

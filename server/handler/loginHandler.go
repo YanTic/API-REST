@@ -27,6 +27,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	if u.Username == "" || u.Password == "" {
 		http.Error(w, "Usuario y Contraseña son obligatorios", http.StatusBadRequest)
+		return
 	} else {
 
 		if service.VerifyIdentity(u.Username, u.Password) {
@@ -56,8 +57,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	w.WriteHeader(http.StatusBadRequest)
-	w.Write([]byte("Error: No se pudo hacer Login"))
+	// w.WriteHeader(http.StatusBadRequest)
+	// w.Write([]byte("Error: No se pudo hacer Login"))
 }
 
 func RecoverPasswordHandler(w http.ResponseWriter, r *http.Request) {

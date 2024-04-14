@@ -15,6 +15,6 @@ Feature: La API permite a un usuario loguearse
         Then La API responde con un mensaje de error indicando que "<mensaje>"
         And La API responde con un Status Code 400
         Examples:
-        | campo    | mensaje                              |
-        | usuario  | El nombre de usuario es obligatorio. |
-        | clave    | La clave es obligatoria.             |
+        | campo    | mensaje                               |
+        | username | Usuario y Contraseña son obligatorios |
+        | password | Usuario y Contraseña son obligatorios |
