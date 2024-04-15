@@ -1,6 +1,7 @@
 {
     "API": {
         "baseUrl": "http://127.0.0.1:80",
-        "loginUserUrl": "http://127.0.0.1:80/"
+        "loginUserUrl": "http://127.0.0.1:80/",
+        "createUserUrl": "http://127.0.0.1:80/users"
     }
 }

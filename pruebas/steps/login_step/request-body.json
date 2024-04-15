@@ -1,0 +1,14 @@
+{
+    "data": {
+        "username": "julian777",
+        "password": "12345"
+    },
+
+    "data-nouser": {
+        "password": "12345"
+    },
+
+    "data-nopass": {
+        "username": "julian777"
+    }
+}

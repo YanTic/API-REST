@@ -72,8 +72,20 @@ func RecoverPasswordHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(fmt.Sprint("Error: No se puede recuperar la contraseña", http.StatusInternalServerError)))
 		return
 	}
+
+	// Recordar: se debe seguir el schema -> jwt-schema.json ()
+	// Ver la func 'LoginHandler'
+	responseString := map[string]string{"token": token}
+
+	responseJSON, err := json.Marshal(responseString)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(fmt.Sprintf("Error al codificar la respuesta JSON: %v", err)))
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(token))
+	w.Write(responseJSON)
 }
 
 func UpdateUserPasswordHandler(w http.ResponseWriter, r *http.Request) {
