@@ -22,7 +22,7 @@ Feature: La API permite a un usuario la opción de crear usuarios
         Then La API responde con un mensaje de error indicando que "<mensaje>"
         And La API responde con un Status Code 400
         Examples:
-        | campo    | mensaje                              |
-        | usuario  | El nombre de usuario es obligatorio  |
-        | clave    | La clave es obligatoria              |
-        | email    | El email es obligatorio              |
+        | campo    | mensaje                     |
+        | usuario  | El username es obligatorio  |
+        | password | La password es obligatoria  |
+        | email    | El email es obligatorio     |

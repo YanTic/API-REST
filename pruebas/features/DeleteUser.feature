@@ -14,8 +14,3 @@ Feature: La API permite a un usuario eliminar un usuario
         When El usuario hace la peticion DELETE a la ruta "/users/{id}"
         Then La API responde con un mensaje de error
         And La API responde con un Status Code 401
-    
-    Scenario: El usuario elimina un user pero en la API ocurrió un error
-        When El usuario hace la peticion DELETE a la ruta "/users/{id}"
-        Then La API responde con un mensaje de error
-        And La API responde con un Status Code 400

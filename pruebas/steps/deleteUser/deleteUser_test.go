@@ -1,4 +1,4 @@
-package createUser_step
+package deleteuser
 
 import (
 	"fmt"
@@ -11,12 +11,6 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-// Algunas funciones son repetidas, por lo que son declaradas en otro archivo .go
-// del directorio steps. Por lo que para solucionar eso se crea para cada _test.go
-// un directorio (package)
-// AYUDA: https://stackoverflow.com/questions/66970531/vs-code-go-main-redeclared-in-this-block
-
-// Estructura para representar la respuesta de la API
 type APIResponse struct {
 	StatusCode int
 	Body       []byte
@@ -24,43 +18,38 @@ type APIResponse struct {
 
 var (
 	url           string
-	createUserUrl string
-	requestBody   string // Esta variable contiene los datos que se envian a la API
+	deleteUserUrl string
+	authToken     string
 
 	apiResponse *APIResponse
 )
 
-// go test -v steps/login_test.go
+// go test -v steps/deleteUser/deleteUser_test.go
 
 func setConfigs() {
 	url = JsonReader("../config-file.json", "API.baseUrl")
-	createUserUrl = JsonReader("../config-file.json", "API.createUserUrl")
+	deleteUserUrl = JsonReader("../config-file.json", "API.deleteUserUrl")
 }
 
-// Esta funcion es mas como por decir especificamente que se hace en el
-// test, pero en testing de cucumber no se hacen consultas a la bd.
-// A menos que en la API se haga.
-// Ademas esto, se supone que el usuario ya está logueado, por lo que
-// ya el servicio de Login debió verificar que el usuario esté en la BD
 func unUsuarioRegistradoEnLaBaseDeDatosQueYaEstLogueado() error {
 	return nil
 }
 
-func enviaEnElRequestbodyUnJSONConLosDatosNecesarios() error {
-	requestBody = JsonReader("request-body.json", "data")
+func suministraElTokenJWTEnLaCabeceraAuthentication() error {
+	authToken = JsonReader("request-body.json", "token")
+
+	if authToken == "" {
+		return fmt.Errorf("el usuario no mandó ningun token")
+	}
+
 	return nil
 }
 
-func suministraElTokenJWTEnLaCabeceraAuthentication() error {
-	return godog.ErrPending
-}
-
-func elUsuarioHaceLaPeticionPOSTALaRuta(arg1 string) error {
+func elUsuarioHaceLaPeticionDELETEALaRuta(arg1 string) error {
 	resp, err := resty.New().R().
 		SetHeader("Content-Type", "application/json").
-		SetBody(requestBody).
-		Post(createUserUrl)
-
+		SetAuthToken(authToken).
+		Delete(deleteUserUrl)
 	if err != nil {
 		return err
 	}
@@ -69,11 +58,14 @@ func elUsuarioHaceLaPeticionPOSTALaRuta(arg1 string) error {
 		StatusCode: resp.StatusCode(),
 		Body:       resp.Body(),
 	}
+
+	print(string(resp.Body()))
 	return nil
 }
 
-func laAPIRespondeConUnMensajeDeExito() error {
-	return godog.ErrPending
+func elTokenJWTNoEsValido() error {
+	authToken = JsonReader("request-body.json", "token-novalid")
+	return nil
 }
 
 func laAPIRespondeConUnStatusCode(codigo int) error {
@@ -83,33 +75,30 @@ func laAPIRespondeConUnStatusCode(codigo int) error {
 	return nil
 }
 
-func elTokenJWTNoEsValido() error {
-	return godog.ErrPending
-}
-
 func laAPIRespondeConUnMensajeDeError() error {
-	return godog.ErrPending
+	if apiResponse.Body == nil || len(apiResponse.Body) == 0 {
+		return fmt.Errorf("La API no mandó ningun mensaje de exito")
+	}
+
+	return nil
 }
 
-func noEnviaUnDatoDeRegistro(arg1 string) error {
-	return godog.ErrPending
-}
+func laAPIRespondeConUnMensajeDeExito() error {
+	if apiResponse.Body == nil || len(apiResponse.Body) == 0 {
+		return fmt.Errorf("La API no mandó ningun mensaje de exito")
+	}
 
-func laAPIRespondeConUnMensajeDeErrorIndicandoQue(arg1 string) error {
-	return godog.ErrPending
+	return nil
 }
 
 func InitializeScenario(ctx *godog.ScenarioContext) {
 	ctx.Step(`^Un usuario registrado en la Base de Datos que ya está logueado$`, unUsuarioRegistradoEnLaBaseDeDatosQueYaEstLogueado)
-	ctx.Step(`^envia en el request-body un JSON con los datos necesarios$`, enviaEnElRequestbodyUnJSONConLosDatosNecesarios)
 	ctx.Step(`^suministra el token JWT en la cabecera Authentication$`, suministraElTokenJWTEnLaCabeceraAuthentication)
-	ctx.Step(`^El usuario hace la peticion POST a la ruta "([^"]*)"$`, elUsuarioHaceLaPeticionPOSTALaRuta)
-	ctx.Step(`^La API responde con un mensaje de exito$`, laAPIRespondeConUnMensajeDeExito)
-	ctx.Step(`^La API responde con un Status Code (\d+)$`, laAPIRespondeConUnStatusCode)
+	ctx.Step(`^El usuario hace la peticion DELETE a la ruta "([^"]*)"$`, elUsuarioHaceLaPeticionDELETEALaRuta)
 	ctx.Step(`^el token JWT no es valido$`, elTokenJWTNoEsValido)
+	ctx.Step(`^La API responde con un Status Code (\d+)$`, laAPIRespondeConUnStatusCode)
+	ctx.Step(`^La API responde con un mensaje de exito$`, laAPIRespondeConUnMensajeDeExito)
 	ctx.Step(`^La API responde con un mensaje de error$`, laAPIRespondeConUnMensajeDeError)
-	ctx.Step(`^no envia un dato de registro "([^"]*)"$`, noEnviaUnDatoDeRegistro)
-	ctx.Step(`^La API responde con un mensaje de error indicando que "([^"]*)"$`, laAPIRespondeConUnMensajeDeErrorIndicandoQue)
 }
 
 func TestMain(m *testing.M) {
@@ -117,7 +106,7 @@ func TestMain(m *testing.M) {
 
 	opts := godog.Options{
 		Format: "progress",
-		Paths:  []string{"../../features/CreateUser.feature"}, // Se especifica que feature usa este "steptest"
+		Paths:  []string{"../../features/DeleteUser.feature"}, // Se especifica que feature usa este "steptest"
 	}
 
 	status := godog.TestSuite{

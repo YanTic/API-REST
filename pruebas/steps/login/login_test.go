@@ -1,4 +1,4 @@
-package steps
+package login
 
 import (
 	"fmt"
@@ -30,8 +30,8 @@ var (
 // go test -v steps/login_test.go
 
 func setConfigs() {
-	url = JsonReader("config-file.json", "API.baseUrl")
-	loginUserUrl = JsonReader("config-file.json", "API.loginUserUrl")
+	url = JsonReader("../config-file.json", "API.baseUrl")
+	loginUserUrl = JsonReader("../config-file.json", "API.loginUserUrl")
 }
 
 // Función para enviar una solicitud POST a la API utilizando Resty
@@ -72,7 +72,7 @@ func laAPIRespondeConUnMensajeDeErrorIndicandoQue(mensaje string) error {
 
 // Función para verificar que la API responde el JWT Token (según el json-schema)
 func laAPIRespondeElTokenJWTDeAutenticacion() error {
-	schemaBytes, err := ioutil.ReadFile("../schemas/jwt-schema.json")
+	schemaBytes, err := ioutil.ReadFile("../../schemas/jwt-schema.json")
 	if err != nil {
 		fmt.Println("Error al leer el JSON Schema:", err)
 		return err
@@ -142,7 +142,7 @@ func TestMain(m *testing.M) {
 
 	opts := godog.Options{
 		Format: "progress",
-		Paths:  []string{"../features/Login.feature"}, // Se especifica que feature usa este "steptest"
+		Paths:  []string{"../../features/Login.feature"}, // Se especifica que feature usa este "steptest"
 	}
 
 	status := godog.TestSuite{

@@ -87,12 +87,24 @@ func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	var newUser response.User
 	json.NewDecoder(r.Body).Decode(&newUser)
-	_, err := service.CreateUser(newUser)
-	if err != nil {
-		log.Println("ERROR: No se creó el usuario: ", err)
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("ERROR: No se creó el usuario"))
+
+	if newUser.Username == "" {
+		http.Error(w, "El username es obligatorio", http.StatusBadRequest)
 		return
+	} else if newUser.Password == "" {
+		http.Error(w, "La password es obligatoria", http.StatusBadRequest)
+		return
+	} else if newUser.Email == "" {
+		http.Error(w, "El email es obligatorio", http.StatusBadRequest)
+		return
+	} else {
+		_, err := service.CreateUser(newUser)
+		if err != nil {
+			log.Println("ERROR: No se creó el usuario: ", err)
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("ERROR: No se creó el usuario"))
+			return
+		}
 	}
 
 	w.Header().Set("Content-Type", "application/json")
