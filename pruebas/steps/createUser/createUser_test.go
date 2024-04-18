@@ -54,7 +54,7 @@ func enviaEnElRequestbodyUnJSONConLosDatosNecesarios() error {
 }
 
 func suministraElTokenJWTEnLaCabeceraAuthentication() error {
-	authToken = JsonReader("request-body.json", "token")
+	authToken = JsonReader("../config-file.json", "API.token")
 	// Aqui hay un problema y es que cuando se hace el POST con resty se tiene que asignar
 	// el token con SetAuthToken en string y no como JSON, por eso se cambia el
 	// formato en el bloque de "request-body.json", "token"
@@ -100,7 +100,7 @@ func laAPIRespondeConUnStatusCode(codigo int) error {
 }
 
 func elTokenJWTNoEsValido() error {
-	authToken = JsonReader("request-body.json", "token-novalid")
+	authToken = JsonReader("../config-file.json", "API.token-novalid")
 
 	// if authToken == "" {
 	// 	return fmt.Errorf("el usuario no mandó ningun token")

@@ -11,7 +11,7 @@ Feature: La API permite la opción de que el usuario puede obtener una lista de 
 
     Scenario: El usuario pide todos los usuarios con paginacion exitosamente
         When El usuario hace la peticion GET a la ruta "/users?offset=1&pagesize=2"
-        Then La API responde con la lista de usuarios, según la paginacion dada
+        Then La API responde con la lista de usuarios
         And La API responde con un Status Code 200
 
     Scenario: El usuario pide todos los usuarios y el JWT token no es valido

@@ -36,7 +36,7 @@ func unUsuarioRegistradoEnLaBaseDeDatosQueYaEstLogueado() error {
 }
 
 func suministraElTokenJWTEnLaCabeceraAuthentication() error {
-	authToken = JsonReader("request-body.json", "token")
+	authToken = JsonReader("../config-file.json", "API.token")
 
 	if authToken == "" {
 		return fmt.Errorf("el usuario no mandó ningun token")
@@ -64,7 +64,7 @@ func elUsuarioHaceLaPeticionDELETEALaRuta(arg1 string) error {
 }
 
 func elTokenJWTNoEsValido() error {
-	authToken = JsonReader("request-body.json", "token-novalid")
+	authToken = JsonReader("../config-file.json", "API.token-novalid")
 	return nil
 }
 

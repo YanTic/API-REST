@@ -3,6 +3,11 @@
         "baseUrl": "http://127.0.0.1:80",
         "loginUserUrl": "http://127.0.0.1:80/",
         "createUserUrl": "http://127.0.0.1:80/users/",
-        "deleteUserUrl": "http://127.0.0.1:80/users/3"
+        "deleteUserUrl": "http://127.0.0.1:80/users/3",
+        "getAllUsersUrl": "http://127.0.0.1:80/users/",
+        "getAllUsersPagUrl": "http://127.0.0.1:80/users/?offset=1&pagesize=2",
+
+        "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM0Njk3NDgsImlzcyI6ImluZ2VzaXMudW5pcXVpbmRpby5lZHUuY28iLCJzdWIiOiJqdWxpYW43NzcifQ.yh1X11Hh95VP2Dcx0-u-ets8_wcpZA6kMWGiSK4m5gk",
+        "token-novalid": ""
     }
 }

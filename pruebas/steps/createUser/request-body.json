@@ -4,11 +4,7 @@
         "password": "12345678",
         "email": "julioelpro@gmail.com"
     },
-
-    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTMyODE2NjUsImlzcyI6ImluZ2VzaXMudW5pcXVpbmRpby5lZHUuY28iLCJzdWIiOiJqdWxpYW43NzcifQ.FFrC25jvSluDhlRWQDBCWzSzXKPsl5OCETAW_MeVGpg",
-
-    "token-novalid": "",
-
+    
     "data-nouser": {
         "password": "12345678",
         "email": "julioelpro@gmail.com"
