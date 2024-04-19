@@ -17,6 +17,6 @@ Feature: La API permite la opción de que el usuario pueda obtener un usuario so
     
     Scenario: El usuario pide un usuario especifico y la API no encuentra el usuario
         And la API no encuentra al usuario
-        When El usuario hace la peticion GET a la ruta "/users/2"
+        When El usuario hace la peticion GET a la ruta "/users/29999"
         Then La API responde con un mensaje de error
         And La API responde con un Status Code 400

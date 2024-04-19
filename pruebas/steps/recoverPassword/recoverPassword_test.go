@@ -1,4 +1,4 @@
-package getAllUsers
+package recoverpassword
 
 import (
 	"fmt"
@@ -18,44 +18,34 @@ type APIResponse struct {
 }
 
 var (
-	url            string
-	getAllUsersUrl string
-	authToken      string
+	url                string
+	recoverPasswordUrl string
+	requestBody        string
 
 	apiResponse *APIResponse
 )
 
-// go test -v steps/getAllUsers/getAllUsers_test.go
+// go test -v steps/recoverPassword/recoverPassword_test.go
 
 func setConfigs() {
 	url = JsonReader("../config-file.json", "API.baseUrl")
-	getAllUsersUrl = JsonReader("../config-file.json", "API.getAllUsersUrl")
+	recoverPasswordUrl = JsonReader("../config-file.json", "API.recoverPasswordUrl")
 }
 
 func unUsuarioRegistradoEnLaBaseDeDatosQueYaEstLogueado() error {
 	return nil
 }
 
-func suministraElTokenJWTEnLaCabeceraAuthentication() error {
-	authToken = JsonReader("../config-file.json", "API.token")
-
-	if authToken == "" {
-		return fmt.Errorf("el usuario no mandó ningun token")
-	}
-
-	return nil
+func enviaEnElRequestbodyUnJSONConElEmail() error {
+	return godog.ErrPending
 }
 
-func elUsuarioHaceLaPeticionGETALaRuta(ruta string) error {
-	// En setConfigs() ya se establece la ruta si 'ruta == /users'
-	if ruta != "/users" {
-		getAllUsersUrl = JsonReader("../config-file.json", "API.getAllUsersPagUrl")
-	}
-
+func elUsuarioHaceLaPeticionGETALaRuta(arg1 string) error {
+	print("URL: ", recoverPasswordUrl)
 	resp, err := resty.New().R().
 		SetHeader("Content-Type", "application/json").
-		SetAuthToken(authToken).
-		Get(getAllUsersUrl)
+		SetBody(requestBody).
+		Get(recoverPasswordUrl)
 	if err != nil {
 		return err
 	}
@@ -67,44 +57,9 @@ func elUsuarioHaceLaPeticionGETALaRuta(ruta string) error {
 	return nil
 }
 
-func elTokenJWTNoEsValido() error {
-	authToken = JsonReader("../config-file.json", "API.token-novalid")
-	return nil
-}
-
-func laAPIRespondeConLaListaDeUsuarios() error {
-	schemaBytes, err := ioutil.ReadFile("../../schemas/listUsers-schema.json")
-	if err != nil {
-		fmt.Println("Error al leer el JSON-Schema:", err)
-		return err
-	}
-
-	responseSchema := gojsonschema.NewBytesLoader(apiResponse.Body)
-	listUserschema := gojsonschema.NewBytesLoader(schemaBytes)
-
-	// Al parecer nunca es bueno utilizar siempre NewStringLoader para todo
-	// En este caso, despues de tantos intentos, NewBytesLoader funcionó para la comparacion de schemas
-	//listUserschema := gojsonschema.NewStringLoader(string(schemaBytes))
-	//responseSchema := gojsonschema.NewStringLoader(string(apiResponse.Body))
-
-	// println("listUserschema:\n", string(schemaBytes))
-	// println("responseSchema:\n", string(apiResponse.Body))
-
-	result, err := gojsonschema.Validate(listUserschema, responseSchema)
-	if err != nil {
-		fmt.Print("Error al validar el schema con la respuesta: ", err.Error())
-		return err
-	}
-
-	if !result.Valid() {
-		fmt.Print("La respuesta no está en el esquema correcto (List Users Schema)")
-		for _, desc := range result.Errors() {
-			fmt.Printf("- %s\n", desc)
-		}
-		return err
-	}
-
-	return nil
+// TODO A
+func noEnviaElCorreoElectronicoEnElRequestbody() error {
+	return godog.ErrPending
 }
 
 func laAPIRespondeConUnMensajeDeError() error {
@@ -122,14 +77,41 @@ func laAPIRespondeConUnStatusCode(codigo int) error {
 	return nil
 }
 
+func laAPIRespondeElTokenJWTDeAutenticacion() error {
+	schemaBytes, err := ioutil.ReadFile("../../schemas/jwt-schema.json")
+	if err != nil {
+		fmt.Println("Error al leer el JSON-Schema:", err)
+		return err
+	}
+
+	responseSchema := gojsonschema.NewBytesLoader(apiResponse.Body)
+	tokenSchema := gojsonschema.NewBytesLoader(schemaBytes)
+
+	result, err := gojsonschema.Validate(tokenSchema, responseSchema)
+	if err != nil {
+		fmt.Print("Error al validar el schema con la respuesta: ", err.Error())
+		return err
+	}
+
+	if !result.Valid() {
+		fmt.Print("La respuesta no está en el esquema correcto (List Users Schema)")
+		for _, desc := range result.Errors() {
+			fmt.Printf("- %s\n", desc)
+		}
+		return err
+	}
+
+	return nil
+}
+
 func InitializeScenario(ctx *godog.ScenarioContext) {
 	ctx.Step(`^Un usuario registrado en la Base de Datos que ya está logueado$`, unUsuarioRegistradoEnLaBaseDeDatosQueYaEstLogueado)
-	ctx.Step(`^suministra el token JWT en la cabecera Authentication$`, suministraElTokenJWTEnLaCabeceraAuthentication)
+	ctx.Step(`^envia en el request-body un JSON con el email$`, enviaEnElRequestbodyUnJSONConElEmail)
 	ctx.Step(`^El usuario hace la peticion GET a la ruta "([^"]*)"$`, elUsuarioHaceLaPeticionGETALaRuta)
-	ctx.Step(`^el token JWT no es valido$`, elTokenJWTNoEsValido)
-	ctx.Step(`^La API responde con la lista de usuarios$`, laAPIRespondeConLaListaDeUsuarios)
+	ctx.Step(`^no envia el correo electronico en el request-body$`, noEnviaElCorreoElectronicoEnElRequestbody)
 	ctx.Step(`^La API responde con un mensaje de error$`, laAPIRespondeConUnMensajeDeError)
 	ctx.Step(`^La API responde con un Status Code (\d+)$`, laAPIRespondeConUnStatusCode)
+	ctx.Step(`^La API responde el token JWT de autenticacion$`, laAPIRespondeElTokenJWTDeAutenticacion)
 }
 
 func TestMain(m *testing.M) {
@@ -137,7 +119,7 @@ func TestMain(m *testing.M) {
 
 	opts := godog.Options{
 		Format: "progress",
-		Paths:  []string{"../../features/GetAllUsers.feature"}, // Se especifica que feature usa este "steptest"
+		Paths:  []string{"../../features/RecoverPassword.feature"}, // Se especifica que feature usa este "steptest"
 	}
 
 	status := godog.TestSuite{

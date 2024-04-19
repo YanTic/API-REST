@@ -1,4 +1,4 @@
-package getAllUsers
+package getuserbyid
 
 import (
 	"fmt"
@@ -19,17 +19,17 @@ type APIResponse struct {
 
 var (
 	url            string
-	getAllUsersUrl string
+	getUserByIdUrl string
 	authToken      string
 
 	apiResponse *APIResponse
 )
 
-// go test -v steps/getAllUsers/getAllUsers_test.go
+// go test -v steps/getUserById/getUserById_test.go
 
 func setConfigs() {
 	url = JsonReader("../config-file.json", "API.baseUrl")
-	getAllUsersUrl = JsonReader("../config-file.json", "API.getAllUsersUrl")
+	getUserByIdUrl = JsonReader("../config-file.json", "API.getUserByIdUrl")
 }
 
 func unUsuarioRegistradoEnLaBaseDeDatosQueYaEstLogueado() error {
@@ -46,16 +46,12 @@ func suministraElTokenJWTEnLaCabeceraAuthentication() error {
 	return nil
 }
 
-func elUsuarioHaceLaPeticionGETALaRuta(ruta string) error {
-	// En setConfigs() ya se establece la ruta si 'ruta == /users'
-	if ruta != "/users" {
-		getAllUsersUrl = JsonReader("../config-file.json", "API.getAllUsersPagUrl")
-	}
-
+func elUsuarioHaceLaPeticionGETALaRuta(arg1 string) error {
+	// print("URL: ", getUserByIdUrl)
 	resp, err := resty.New().R().
 		SetHeader("Content-Type", "application/json").
 		SetAuthToken(authToken).
-		Get(getAllUsersUrl)
+		Get(getUserByIdUrl)
 	if err != nil {
 		return err
 	}
@@ -72,7 +68,13 @@ func elTokenJWTNoEsValido() error {
 	return nil
 }
 
-func laAPIRespondeConLaListaDeUsuarios() error {
+// ERROR EN USERSERVICE.GO CORREGIR ESTO PARA QUE CUANDO NO ENCUENTRE EL USER MANDE EL ERROR
+func laAPINoEncuentraAlUsuario() error {
+	getUserByIdUrl += "9999" // Se pone a la API a que busque un ID que no existe
+	return nil
+}
+
+func laAPIRespondeConLosDatosDelUsuario() error {
 	schemaBytes, err := ioutil.ReadFile("../../schemas/listUsers-schema.json")
 	if err != nil {
 		fmt.Println("Error al leer el JSON-Schema:", err)
@@ -80,17 +82,9 @@ func laAPIRespondeConLaListaDeUsuarios() error {
 	}
 
 	responseSchema := gojsonschema.NewBytesLoader(apiResponse.Body)
-	listUserschema := gojsonschema.NewBytesLoader(schemaBytes)
+	userSchema := gojsonschema.NewBytesLoader(schemaBytes)
 
-	// Al parecer nunca es bueno utilizar siempre NewStringLoader para todo
-	// En este caso, despues de tantos intentos, NewBytesLoader funcionó para la comparacion de schemas
-	//listUserschema := gojsonschema.NewStringLoader(string(schemaBytes))
-	//responseSchema := gojsonschema.NewStringLoader(string(apiResponse.Body))
-
-	// println("listUserschema:\n", string(schemaBytes))
-	// println("responseSchema:\n", string(apiResponse.Body))
-
-	result, err := gojsonschema.Validate(listUserschema, responseSchema)
+	result, err := gojsonschema.Validate(userSchema, responseSchema)
 	if err != nil {
 		fmt.Print("Error al validar el schema con la respuesta: ", err.Error())
 		return err
@@ -127,7 +121,8 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 	ctx.Step(`^suministra el token JWT en la cabecera Authentication$`, suministraElTokenJWTEnLaCabeceraAuthentication)
 	ctx.Step(`^El usuario hace la peticion GET a la ruta "([^"]*)"$`, elUsuarioHaceLaPeticionGETALaRuta)
 	ctx.Step(`^el token JWT no es valido$`, elTokenJWTNoEsValido)
-	ctx.Step(`^La API responde con la lista de usuarios$`, laAPIRespondeConLaListaDeUsuarios)
+	ctx.Step(`^la API no encuentra al usuario$`, laAPINoEncuentraAlUsuario)
+	ctx.Step(`^La API responde con los datos del usuario$`, laAPIRespondeConLosDatosDelUsuario)
 	ctx.Step(`^La API responde con un mensaje de error$`, laAPIRespondeConUnMensajeDeError)
 	ctx.Step(`^La API responde con un Status Code (\d+)$`, laAPIRespondeConUnStatusCode)
 }
@@ -137,7 +132,7 @@ func TestMain(m *testing.M) {
 
 	opts := godog.Options{
 		Format: "progress",
-		Paths:  []string{"../../features/GetAllUsers.feature"}, // Se especifica que feature usa este "steptest"
+		Paths:  []string{"../../features/GetUserById.feature"}, // Se especifica que feature usa este "steptest"
 	}
 
 	status := godog.TestSuite{

@@ -61,9 +61,9 @@ func GetUserByIdHandler(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 	user, err := service.GetUserById(id)
 	if err != nil {
-		log.Println("ERROR: No se envió el usuario: ", err)
+		log.Println("ERROR: ", err)
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("ERROR: No se envió el usuario"))
+		w.Write([]byte(fmt.Sprint("Error: ", err)))
 		return
 	}
 

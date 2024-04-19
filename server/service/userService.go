@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"server/database"
@@ -33,6 +34,7 @@ func GetUsers(offset, pageSize int) ([]response.User, error) {
 	return users, nil
 }
 
+// CORREGIR ESTO PARA QUE CUANDO NO ENCUENTRE EL USER MANDE EL ERROR
 func GetUserById(id string) (response.User, error) {
 	rows, err := database.DB.Query("SELECT * FROM user WHERE id = " + id)
 	if err != nil {
@@ -42,12 +44,14 @@ func GetUserById(id string) (response.User, error) {
 	defer rows.Close()
 
 	var user response.User
-	for rows.Next() {
-		err := rows.Scan(&user.Id, &user.Username, &user.Password, &user.Email)
-		if err != nil {
-			log.Println("Error scanning row", http.StatusInternalServerError)
-			return response.User{}, err
-		}
+	if !rows.Next() {
+		return response.User{}, fmt.Errorf("no se encontró ningún usuario con ID: %s", id)
+	}
+
+	err = rows.Scan(&user.Id, &user.Username, &user.Password, &user.Email)
+	if err != nil {
+		log.Println("Error scanning row", http.StatusInternalServerError)
+		return response.User{}, err
 	}
 
 	return user, nil
