@@ -101,8 +101,6 @@ func laAPIRespondeElTokenJWTDeAutenticacion() error {
 	return nil
 }
 
-// Función para verificar que no se envía un dato de logueo
-// TODO: TERMINAR
 func noEnviaUnDatoDeLogueo(campo string) error {
 	if campo == "username" {
 		requestBody = JsonReader("request-body.json", "data-nouser")

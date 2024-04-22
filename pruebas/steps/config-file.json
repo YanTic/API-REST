@@ -9,7 +9,7 @@
         "getUserByIdUrl": "http://127.0.0.1:80/users/2",
         "recoverPasswordUrl": "http://127.0.0.1:80/password",
 
-        "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM0OTY3MDEsImlzcyI6ImluZ2VzaXMudW5pcXVpbmRpby5lZHUuY28iLCJzdWIiOiJqdWxpYW43NzcifQ.kcB7_kWb3Tn74xQJcIYB6W74hSJMBfsqDp-I8hFy1qY",
+        "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM3NDA4NTYsImlzcyI6ImluZ2VzaXMudW5pcXVpbmRpby5lZHUuY28iLCJzdWIiOiJqdWxpYW43NzcifQ.gQSIGOSIx3QypDXvGGE-3wZbjgRrHQOKvqTPRbeFuRw",
         "token-novalid": ""
     }
 }

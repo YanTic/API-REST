@@ -1,0 +1,9 @@
+{
+    "data": {
+        "Email": "burgos@mail.com"
+    },
+
+    "data-noemail": {
+        "Email": ""
+    }
+}

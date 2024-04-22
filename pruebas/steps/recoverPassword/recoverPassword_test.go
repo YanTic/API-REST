@@ -37,15 +37,25 @@ func unUsuarioRegistradoEnLaBaseDeDatosQueYaEstLogueado() error {
 }
 
 func enviaEnElRequestbodyUnJSONConElEmail() error {
-	return godog.ErrPending
+	requestBody = JsonReader("request-body.json", "data")
+	return nil
 }
 
+func noEnviaElCorreoElectronicoEnElRequestbody() error {
+	requestBody = JsonReader("request-body.json", "data-noemail")
+	return nil
+}
+
+// En una peticion GET nunca se manda un "Body", eso es un error de la API
+// Aunque Postman deje usar un body en una peticion GET, no deberia, incluso
+// la libreria "Resty" que se está usando para las peticiones no deja
+
+// Para ese problema se cambió la API, ahora no es GET sino PATCH
 func elUsuarioHaceLaPeticionGETALaRuta(arg1 string) error {
-	print("URL: ", recoverPasswordUrl)
 	resp, err := resty.New().R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(requestBody).
-		Get(recoverPasswordUrl)
+		Patch(recoverPasswordUrl)
 	if err != nil {
 		return err
 	}
@@ -54,12 +64,8 @@ func elUsuarioHaceLaPeticionGETALaRuta(arg1 string) error {
 		StatusCode: resp.StatusCode(),
 		Body:       resp.Body(),
 	}
-	return nil
-}
 
-// TODO A
-func noEnviaElCorreoElectronicoEnElRequestbody() error {
-	return godog.ErrPending
+	return nil
 }
 
 func laAPIRespondeConUnMensajeDeError() error {
@@ -107,8 +113,8 @@ func laAPIRespondeElTokenJWTDeAutenticacion() error {
 func InitializeScenario(ctx *godog.ScenarioContext) {
 	ctx.Step(`^Un usuario registrado en la Base de Datos que ya está logueado$`, unUsuarioRegistradoEnLaBaseDeDatosQueYaEstLogueado)
 	ctx.Step(`^envia en el request-body un JSON con el email$`, enviaEnElRequestbodyUnJSONConElEmail)
-	ctx.Step(`^El usuario hace la peticion GET a la ruta "([^"]*)"$`, elUsuarioHaceLaPeticionGETALaRuta)
 	ctx.Step(`^no envia el correo electronico en el request-body$`, noEnviaElCorreoElectronicoEnElRequestbody)
+	ctx.Step(`^El usuario hace la peticion GET a la ruta "([^"]*)"$`, elUsuarioHaceLaPeticionGETALaRuta)
 	ctx.Step(`^La API responde con un mensaje de error$`, laAPIRespondeConUnMensajeDeError)
 	ctx.Step(`^La API responde con un Status Code (\d+)$`, laAPIRespondeConUnStatusCode)
 	ctx.Step(`^La API responde el token JWT de autenticacion$`, laAPIRespondeElTokenJWTDeAutenticacion)

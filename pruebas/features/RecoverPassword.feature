@@ -9,13 +9,8 @@ Feature: La API permite a un usuario recuperar su contraseña, recibiendo un JWT
         Then La API responde el token JWT de autenticacion
         And La API responde con un Status Code 200
 
-    Scenario: El usuario pide recuperar su contraseña y no envia el correo
+    Scenario: El usuario pide recuperar su contraseña y no envia el correo (o uno valido)
         And no envia el correo electronico en el request-body
-        When El usuario hace la peticion GET a la ruta "/password"
-        Then La API responde con un mensaje de error
-        And La API responde con un Status Code 500
-    
-    Scenario: El usuario pide recuperar su contraseña y la API no encuentra el usuario
         When El usuario hace la peticion GET a la ruta "/password"
         Then La API responde con un mensaje de error
         And La API responde con un Status Code 500
