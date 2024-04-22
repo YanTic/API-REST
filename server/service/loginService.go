@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"server/database"
@@ -33,14 +34,13 @@ func RecoverPassword(email string) (string, error) {
 	defer rows.Close()
 
 	var user response.User
-	if rows.Next() {
-		err := rows.Scan(&user.Id, &user.Username, &user.Password, &user.Email)
-		if err != nil {
-			log.Println("Error scanning row", http.StatusInternalServerError)
-			return "", err
-		}
-	} else {
-		log.Println("No se encontró el usuario", http.StatusBadRequest)
+	if !rows.Next() {
+		return "", fmt.Errorf("No se encontró ningún usuario con EMAIL: %s", email)
+	}
+
+	err = rows.Scan(&user.Id, &user.Username, &user.Password, &user.Email)
+	if err != nil {
+		log.Println("Error scanning row", http.StatusInternalServerError)
 		return "", err
 	}
 

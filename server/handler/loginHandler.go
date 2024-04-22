@@ -64,12 +64,12 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 func RecoverPasswordHandler(w http.ResponseWriter, r *http.Request) {
 	var u response.User
 	json.NewDecoder(r.Body).Decode(&u)
-	fmt.Printf("Valores enviados por JSON %v", u)
+	log.Println("Valores enviados por JSON: ", u)
 
 	token, err := service.RecoverPassword(u.Email)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(fmt.Sprint("Error: No se puede recuperar la contraseña", http.StatusInternalServerError)))
+		w.Write([]byte(fmt.Sprint("Error: ", err)))
 		return
 	}
 

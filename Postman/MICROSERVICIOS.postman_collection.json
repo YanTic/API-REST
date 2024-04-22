@@ -154,13 +154,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/users/2",
+					"raw": "{{base_url}}/users/232324",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"users",
-						"2"
+						"232324"
 					]
 				},
 				"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
@@ -339,14 +339,11 @@
 					}
 				}
 			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
 			"request": {
 				"auth": {
 					"type": "noauth"
 				},
-				"method": "GET",
+				"method": "PATCH",
 				"header": [],
 				"body": {
 					"mode": "raw",

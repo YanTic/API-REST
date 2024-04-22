@@ -16,7 +16,7 @@ func main() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/", handler.LoginHandler).Methods("POST")
-	router.HandleFunc("/password", handler.RecoverPasswordHandler).Methods("GET")
+	router.HandleFunc("/password", handler.RecoverPasswordHandler).Methods("PATCH")
 	router.HandleFunc("/password/{id}", handler.UpdateUserPasswordHandler).Methods("PATCH")
 
 	usersRouter := router.PathPrefix("/users").Subrouter()

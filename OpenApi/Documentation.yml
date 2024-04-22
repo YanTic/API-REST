@@ -42,7 +42,7 @@ paths:
                 $ref: '#/components/schemas/Unsuccess'
 
   /password:
-    get:
+    patch:
       tags:
         - password
       summary: Recover password (returns token)
