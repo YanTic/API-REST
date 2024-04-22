@@ -99,6 +99,7 @@ func UpdateUserPasswordHandler(w http.ResponseWriter, r *http.Request) {
 
 	if u.Password == "" {
 		http.Error(w, "La nueva contraseña es necesaria", http.StatusBadRequest)
+		return
 	} else {
 
 		_, err := service.UpdateUserPassword(u, userId)

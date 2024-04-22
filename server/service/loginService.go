@@ -54,7 +54,7 @@ func RecoverPassword(email string) (string, error) {
 }
 
 func UpdateUserPassword(user response.User, idUser string) (response.User, error) {
-	rows, err := database.DB.Query("SELECT * FROM user WHERE id = ? AND email = ?", idUser, user.Email)
+	rows, err := database.DB.Query("SELECT * FROM user WHERE id = ?", idUser)
 	if err != nil {
 		log.Println("ERROR AL CONSULTAR LA BASE DE DATOS", http.StatusInternalServerError)
 		return response.User{}, err
