@@ -1,0 +1,9 @@
+{
+    "data": {
+        "Password": "123456"
+    },
+
+    "data-nopass": {
+        "Password": ""
+    }
+}

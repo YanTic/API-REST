@@ -111,7 +111,7 @@ func elTokenJWTNoEsValido() error {
 
 func laAPIRespondeConUnMensajeDeError() error {
 	if apiResponse.Body == nil || len(apiResponse.Body) == 0 {
-		return fmt.Errorf("La API no mandó ningun mensaje de exito")
+		return fmt.Errorf("La API no mandó ningun mensaje de error")
 	}
 
 	return nil

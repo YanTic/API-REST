@@ -1,4 +1,4 @@
-package getuserbyid
+package updateuser
 
 import (
 	"fmt"
@@ -9,7 +9,6 @@ import (
 	"github.com/cucumber/godog"
 	"github.com/go-resty/resty/v2"
 	"github.com/tidwall/gjson"
-	"github.com/xeipuuv/gojsonschema"
 )
 
 type APIResponse struct {
@@ -18,21 +17,27 @@ type APIResponse struct {
 }
 
 var (
-	url            string
-	getUserByIdUrl string
-	authToken      string
+	url           string
+	updateUserUrl string
+	requestBody   string
+	authToken     string
 
 	apiResponse *APIResponse
 )
 
-// go test -v steps/getUserById/getUserById_test.go
+// go test -v steps/updateUser/updateUser_test.go
 
 func setConfigs() {
 	url = JsonReader("../config-file.json", "API.baseUrl")
-	getUserByIdUrl = JsonReader("../config-file.json", "API.getUserByIdUrl")
+	updateUserUrl = JsonReader("../config-file.json", "API.updateUserUrl")
 }
 
 func unUsuarioRegistradoEnLaBaseDeDatosQueYaEstLogueado() error {
+	return nil
+}
+
+func enviaEnElRequestbodyUnJSONConLosDatosNecesarios() error {
+	requestBody = JsonReader("request-body.json", "data")
 	return nil
 }
 
@@ -46,12 +51,12 @@ func suministraElTokenJWTEnLaCabeceraAuthentication() error {
 	return nil
 }
 
-func elUsuarioHaceLaPeticionGETALaRuta(arg1 string) error {
-	// print("URL: ", getUserByIdUrl)
+func elUsuarioHaceLaPeticionPUTALaRuta(arg1 string) error {
 	resp, err := resty.New().R().
 		SetHeader("Content-Type", "application/json").
 		SetAuthToken(authToken).
-		Get(getUserByIdUrl)
+		SetBody(requestBody).
+		Put(updateUserUrl)
 	if err != nil {
 		return err
 	}
@@ -60,6 +65,9 @@ func elUsuarioHaceLaPeticionGETALaRuta(arg1 string) error {
 		StatusCode: resp.StatusCode(),
 		Body:       resp.Body(),
 	}
+
+	print("\nresponse: ", string(resp.Body()))
+
 	return nil
 }
 
@@ -69,40 +77,21 @@ func elTokenJWTNoEsValido() error {
 }
 
 func laAPINoEncuentraAlUsuario() error {
-	getUserByIdUrl += "9999" // Se pone a la API a que busque un ID que no existe
-	return nil
-}
-
-func laAPIRespondeConLosDatosDelUsuario() error {
-	schemaBytes, err := ioutil.ReadFile("../../schemas/listUsers-schema.json")
-	if err != nil {
-		fmt.Println("Error al leer el JSON-Schema:", err)
-		return err
-	}
-
-	responseSchema := gojsonschema.NewBytesLoader(apiResponse.Body)
-	userSchema := gojsonschema.NewBytesLoader(schemaBytes)
-
-	result, err := gojsonschema.Validate(userSchema, responseSchema)
-	if err != nil {
-		fmt.Print("Error al validar el schema con la respuesta: ", err.Error())
-		return err
-	}
-
-	if !result.Valid() {
-		fmt.Print("La respuesta no está en el esquema correcto (List Users Schema)")
-		for _, desc := range result.Errors() {
-			fmt.Printf("- %s\n", desc)
-		}
-		return err
-	}
-
+	updateUserUrl += "9999" // Se pone a la API a que busque un ID que no existe
 	return nil
 }
 
 func laAPIRespondeConUnMensajeDeError() error {
 	if apiResponse.Body == nil || len(apiResponse.Body) == 0 {
 		return fmt.Errorf("La API no mandó ningun mensaje de error")
+	}
+
+	return nil
+}
+
+func laAPIRespondeConUnMensajeDeExito() error {
+	if apiResponse.Body == nil || len(apiResponse.Body) == 0 {
+		return fmt.Errorf("La API no mandó ningun mensaje de exito")
 	}
 
 	return nil
@@ -117,12 +106,13 @@ func laAPIRespondeConUnStatusCode(codigo int) error {
 
 func InitializeScenario(ctx *godog.ScenarioContext) {
 	ctx.Step(`^Un usuario registrado en la Base de Datos que ya está logueado$`, unUsuarioRegistradoEnLaBaseDeDatosQueYaEstLogueado)
+	ctx.Step(`^envia en el request-body un JSON con los datos necesarios$`, enviaEnElRequestbodyUnJSONConLosDatosNecesarios)
 	ctx.Step(`^suministra el token JWT en la cabecera Authentication$`, suministraElTokenJWTEnLaCabeceraAuthentication)
-	ctx.Step(`^El usuario hace la peticion GET a la ruta "([^"]*)"$`, elUsuarioHaceLaPeticionGETALaRuta)
+	ctx.Step(`^El usuario hace la peticion PUT a la ruta "([^"]*)"$`, elUsuarioHaceLaPeticionPUTALaRuta)
 	ctx.Step(`^el token JWT no es valido$`, elTokenJWTNoEsValido)
 	ctx.Step(`^la API no encuentra al usuario$`, laAPINoEncuentraAlUsuario)
-	ctx.Step(`^La API responde con los datos del usuario$`, laAPIRespondeConLosDatosDelUsuario)
 	ctx.Step(`^La API responde con un mensaje de error$`, laAPIRespondeConUnMensajeDeError)
+	ctx.Step(`^La API responde con un mensaje de exito$`, laAPIRespondeConUnMensajeDeExito)
 	ctx.Step(`^La API responde con un Status Code (\d+)$`, laAPIRespondeConUnStatusCode)
 }
 
@@ -131,7 +121,7 @@ func TestMain(m *testing.M) {
 
 	opts := godog.Options{
 		Format: "progress",
-		Paths:  []string{"../../features/GetUserById.feature"}, // Se especifica que feature usa este "steptest"
+		Paths:  []string{"../../features/UpdateUser.feature"}, // Se especifica que feature usa este "steptest"
 	}
 
 	status := godog.TestSuite{
