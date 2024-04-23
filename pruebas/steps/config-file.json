@@ -11,7 +11,7 @@
         "updatePasswordUrl": "http://127.0.0.1:80/password/2",
         "updateUserUrl": "http://127.0.0.1:80/users/2",
 
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM3NjI3NjMsImlzcyI6ImluZ2VzaXMudW5pcXVpbmRpby5lZHUuY28iLCJzdWIiOiJqdWxpYW43NzcifQ.9eVLbOPwj_fpv0Mjn1scmBN3b-71o0_6acwKxy-PmeE",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM4ODcyNDIsImlzcyI6ImluZ2VzaXMudW5pcXVpbmRpby5lZHUuY28iLCJzdWIiOiJqdWxpYW43NzcifQ.ZvJQ-fZZeA6wybfzwJV__rszjxJsX0WO6w-_sren_AA",
         "token-novalid": "",
         "recoveryToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM3NTk2MzQsImlzcyI6ImluZ2VzaXMudW5pcXVpbmRpby5lZHUuY28iLCJzdWIiOiJidXJnb3M3NzcifQ.aF10H5ZXzOJfqi-qtx-ekpntC6AdsPChu1xmvoH0Xos"
     }

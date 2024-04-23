@@ -1,6 +1,7 @@
 package createUser
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -8,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/cucumber/godog"
+	"github.com/go-faker/faker/v4"
 	"github.com/go-resty/resty/v2"
 	"github.com/tidwall/gjson"
 )
@@ -22,6 +24,14 @@ type APIResponse struct {
 	StatusCode int
 	Body       []byte
 }
+
+type User struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Email    string `json:"email"`
+}
+
+type Data map[string]User
 
 var (
 	url           string
@@ -101,11 +111,6 @@ func laAPIRespondeConUnStatusCode(codigo int) error {
 
 func elTokenJWTNoEsValido() error {
 	authToken = JsonReader("../config-file.json", "API.token-novalid")
-
-	// if authToken == "" {
-	// 	return fmt.Errorf("el usuario no mandó ningun token")
-	// }
-
 	return nil
 }
 
@@ -152,6 +157,20 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 func TestMain(m *testing.M) {
 	setConfigs()
 
+	// SE CREAN LOS DATOS PARA LA PRUEBAS
+	data := generateData()
+	jsonData, err := json.MarshalIndent(data, "", "    ")
+	if err != nil {
+		fmt.Println("Error al convertir los datos a JSON: ", err)
+		return
+	}
+
+	if err := writeToFile(string(jsonData), "request-body.json"); err != nil {
+		fmt.Println("Error al escribir en el archivo: ", err)
+		return
+	}
+
+	// SE EJECUTAN LAS PRUEBAS
 	opts := godog.Options{
 		Format: "progress",
 		Paths:  []string{"../../features/CreateUser.feature"}, // Se especifica que feature usa este "steptest"
@@ -187,4 +206,47 @@ func JsonReader(pathOfFile, pathOfData string) (result string) {
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	result = gjson.Get(string(byteValue), pathOfData).String()
 	return result
+}
+
+// Esta funcoin genera cada uno de los casos al crear un usuario, todo en un JSON
+func generateData() Data {
+	data := make(Data)
+
+	data["data"] = User{
+		Username: faker.Username(),
+		Password: faker.Password(),
+		Email:    faker.Email(),
+	}
+
+	data["data-nouser"] = User{
+		Password: faker.Password(),
+		Email:    faker.Email(),
+	}
+
+	data["data-nopass"] = User{
+		Username: faker.Username(),
+		Email:    faker.Email(),
+	}
+
+	data["data-noemail"] = User{
+		Username: faker.Username(),
+		Password: faker.Password(),
+	}
+
+	return data
+}
+
+func writeToFile(data, pathOfFile string) error {
+	file, err := os.Create(pathOfFile)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	_, err = file.WriteString(data)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -1,12 +1,15 @@
 package updateuser
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"os"
 	"testing"
 
 	"github.com/cucumber/godog"
+	"github.com/go-faker/faker/v4"
 	"github.com/go-resty/resty/v2"
 	"github.com/tidwall/gjson"
 )
@@ -15,6 +18,14 @@ type APIResponse struct {
 	StatusCode int
 	Body       []byte
 }
+
+type User struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Email    string `json:"email"`
+}
+
+type Data map[string]User
 
 var (
 	url           string
@@ -119,6 +130,20 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 func TestMain(m *testing.M) {
 	setConfigs()
 
+	// SE CREAN LOS DATOS PARA LA PRUEBAS
+	data := generateData()
+	jsonData, err := json.MarshalIndent(data, "", "    ")
+	if err != nil {
+		fmt.Println("Error al convertir los datos a JSON: ", err)
+		return
+	}
+
+	if err := writeToFile(string(jsonData), "request-body.json"); err != nil {
+		fmt.Println("Error al escribir en el archivo: ", err)
+		return
+	}
+
+	// SE EJECUTAN LAS PRUEBAS
 	opts := godog.Options{
 		Format: "progress",
 		Paths:  []string{"../../features/UpdateUser.feature"}, // Se especifica que feature usa este "steptest"
@@ -154,4 +179,53 @@ func JsonReader(pathOfFile, pathOfData string) (result string) {
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	result = gjson.Get(string(byteValue), pathOfData).String()
 	return result
+}
+
+func generateData() Data {
+	data := make(Data)
+
+	switch rand.Intn(5) {
+	case 0:
+		data["data"] = User{
+			Username: faker.Username(),
+			Password: faker.Password(),
+			Email:    faker.Email(),
+		}
+	case 1:
+		data["data"] = User{
+			Password: faker.Password(),
+			Email:    faker.Email(),
+		}
+	case 2:
+		data["data"] = User{
+			Username: faker.Username(),
+			Email:    faker.Email(),
+		}
+	case 3:
+		data["data"] = User{
+			Username: faker.Username(),
+			Password: faker.Password(),
+		}
+	case 4:
+		data["data"] = User{
+			Username: faker.Username(),
+		}
+	}
+
+	return data
+}
+
+func writeToFile(data, pathOfFile string) error {
+	file, err := os.Create(pathOfFile)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	_, err = file.WriteString(data)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
