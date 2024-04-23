@@ -8,11 +8,11 @@
         "getAllUsersPagUrl": "http://127.0.0.1:80/users/?offset=1&pagesize=2",
         "getUserByIdUrl": "http://127.0.0.1:80/users/2",
         "recoverPasswordUrl": "http://127.0.0.1:80/password",
-        "updatePasswordUrl": "http://127.0.0.1:80/password/2",
+        "updatePasswordUrl": "http://127.0.0.1:80/password/4",
         "updateUserUrl": "http://127.0.0.1:80/users/2",
 
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM4ODcyNDIsImlzcyI6ImluZ2VzaXMudW5pcXVpbmRpby5lZHUuY28iLCJzdWIiOiJqdWxpYW43NzcifQ.ZvJQ-fZZeA6wybfzwJV__rszjxJsX0WO6w-_sren_AA",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM4OTUwMjIsImlzcyI6ImluZ2VzaXMudW5pcXVpbmRpby5lZHUuY28iLCJzdWIiOiJqdWxpYW43NzcifQ.fic28hFEE08uvgsKnSEKoDpA736gL5V9xt6GouKK7kg",
         "token-novalid": "",
-        "recoveryToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM3NTk2MzQsImlzcyI6ImluZ2VzaXMudW5pcXVpbmRpby5lZHUuY28iLCJzdWIiOiJidXJnb3M3NzcifQ.aF10H5ZXzOJfqi-qtx-ekpntC6AdsPChu1xmvoH0Xos"
+        "recoveryToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM4OTQ0ODQsImlzcyI6ImluZ2VzaXMudW5pcXVpbmRpby5lZHUuY28iLCJzdWIiOiJqdWxpb2VscHJvIn0.HETNVBZUH0Rmpv7AIDKtNxTf9ZYVSMRWhWDPFy8X5cQ"
     }
 }

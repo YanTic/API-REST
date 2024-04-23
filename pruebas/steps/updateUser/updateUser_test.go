@@ -78,6 +78,7 @@ func elUsuarioHaceLaPeticionPUTALaRuta(arg1 string) error {
 	}
 
 	print("\nresponse: ", string(resp.Body()))
+	print("\nLOGIN_TEST TOKEN: ", authToken)
 
 	return nil
 }

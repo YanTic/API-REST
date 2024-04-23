@@ -64,6 +64,9 @@ func elUsuarioHaceLaPeticionGETALaRuta(ruta string) error {
 		StatusCode: resp.StatusCode(),
 		Body:       resp.Body(),
 	}
+
+	print("LOGIN_TEST TOKEN: ", authToken)
+
 	return nil
 }
 

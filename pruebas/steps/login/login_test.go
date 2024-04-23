@@ -48,6 +48,9 @@ func elUsuarioHaceLaPeticionPOSTALaRuta(ruta string) error {
 		StatusCode: resp.StatusCode(),
 		Body:       resp.Body(),
 	}
+
+	print("\nLOGIN_TEST TOKEN: ", string(resp.Body()))
+
 	return nil
 }
 
