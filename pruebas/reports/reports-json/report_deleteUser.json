@@ -20,7 +20,7 @@
                         "name": "Un usuario registrado en la Base de Datos que ya está logueado",
                         "line": 4,
                         "match": {
-                            "location": "deleteUser_test.go:35"
+                            "location": "deleteUser_test.go:59"
                         },
                         "result": {
                             "status": "passed",
@@ -32,11 +32,11 @@
                         "name": "suministra el token JWT en la cabecera Authentication",
                         "line": 5,
                         "match": {
-                            "location": "deleteUser_test.go:38"
+                            "location": "deleteUser_test.go:62"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 0
+                            "duration": 15196100
                         }
                     },
                     {
@@ -44,11 +44,11 @@
                         "name": "El usuario hace la peticion DELETE a la ruta \"/users/{id}\"",
                         "line": 8,
                         "match": {
-                            "location": "deleteUser_test.go:48"
+                            "location": "deleteUser_test.go:72"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 18712200
+                            "duration": 4092500
                         }
                     },
                     {
@@ -56,7 +56,7 @@
                         "name": "La API responde con un mensaje de exito",
                         "line": 9,
                         "match": {
-                            "location": "deleteUser_test.go:86"
+                            "location": "deleteUser_test.go:110"
                         },
                         "result": {
                             "status": "passed",
@@ -68,7 +68,7 @@
                         "name": "La API responde con un Status Code 200",
                         "line": 10,
                         "match": {
-                            "location": "deleteUser_test.go:71"
+                            "location": "deleteUser_test.go:95"
                         },
                         "result": {
                             "status": "passed",
@@ -90,7 +90,7 @@
                         "name": "Un usuario registrado en la Base de Datos que ya está logueado",
                         "line": 4,
                         "match": {
-                            "location": "deleteUser_test.go:35"
+                            "location": "deleteUser_test.go:59"
                         },
                         "result": {
                             "status": "passed",
@@ -102,11 +102,11 @@
                         "name": "suministra el token JWT en la cabecera Authentication",
                         "line": 5,
                         "match": {
-                            "location": "deleteUser_test.go:38"
+                            "location": "deleteUser_test.go:62"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 0
+                            "duration": 4566500
                         }
                     },
                     {
@@ -114,11 +114,11 @@
                         "name": "el token JWT no es valido",
                         "line": 13,
                         "match": {
-                            "location": "deleteUser_test.go:66"
+                            "location": "deleteUser_test.go:90"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 524400
+                            "duration": 526100
                         }
                     },
                     {
@@ -126,11 +126,11 @@
                         "name": "El usuario hace la peticion DELETE a la ruta \"/users/{id}\"",
                         "line": 14,
                         "match": {
-                            "location": "deleteUser_test.go:48"
+                            "location": "deleteUser_test.go:72"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 10238100
+                            "duration": 2950300
                         }
                     },
                     {
@@ -138,7 +138,7 @@
                         "name": "La API responde con un mensaje de error",
                         "line": 15,
                         "match": {
-                            "location": "deleteUser_test.go:78"
+                            "location": "deleteUser_test.go:102"
                         },
                         "result": {
                             "status": "passed",
@@ -150,11 +150,11 @@
                         "name": "La API responde con un Status Code 401",
                         "line": 16,
                         "match": {
-                            "location": "deleteUser_test.go:71"
+                            "location": "deleteUser_test.go:95"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 996700
+                            "duration": 0
                         }
                     }
                 ]

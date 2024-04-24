@@ -49,6 +49,29 @@ func setConfigs() {
 	createUserUrl = JsonReader("../config-file.json", "API.createUserUrl")
 }
 
+// Función para obtener un jwt Token del servidor
+func getToken() string {
+	resp, err := resty.New().R().
+		SetHeader("Content-Type", "application/json").
+		SetBody(JsonReader("../login/request-body.json", "data")).
+		Post(JsonReader("../config-file.json", "API.loginUserUrl"))
+	if err != nil {
+		return ""
+	}
+
+	var tokenResp map[string]string
+	if err := json.Unmarshal(resp.Body(), &tokenResp); err != nil {
+		return ""
+	}
+	token, exists := tokenResp["token"]
+	if !exists {
+		return ""
+	}
+
+	// Retornar solo el token sin el {"token":
+	return token
+}
+
 // Esta funcion es mas como por decir especificamente que se hace en el
 // test, pero en testing de cucumber no se hacen consultas a la bd.
 // A menos que en la API se haga.
@@ -63,12 +86,25 @@ func enviaEnElRequestbodyUnJSONConLosDatosNecesarios() error {
 	return nil
 }
 
+// Debido a que las pruebas se ejecutan con contenedores, no se debe poner
+// el token manualmente en el archivo config-file.json, por lo que ahora
+// se hace una peticion POST para obtener el token.
+// func suministraElTokenJWTEnLaCabeceraAuthentication() error {
+// 	authToken = JsonReader("../config-file.json", "API.token")
+// 	// Aqui hay un problema y es que cuando se hace el POST con resty se tiene que asignar
+// 	// el token con SetAuthToken en string y no como JSON, por eso se cambia el
+// 	// formato en el bloque de "request-body.json", "token"
+// 	// print(authToken)
+
+// 	if authToken == "" {
+// 		return fmt.Errorf("el usuario no mandó ningun token")
+// 	}
+
+// 	return nil
+// }
+
 func suministraElTokenJWTEnLaCabeceraAuthentication() error {
-	authToken = JsonReader("../config-file.json", "API.token")
-	// Aqui hay un problema y es que cuando se hace el POST con resty se tiene que asignar
-	// el token con SetAuthToken en string y no como JSON, por eso se cambia el
-	// formato en el bloque de "request-body.json", "token"
-	// print(authToken)
+	authToken = getToken()
 
 	if authToken == "" {
 		return fmt.Errorf("el usuario no mandó ningun token")

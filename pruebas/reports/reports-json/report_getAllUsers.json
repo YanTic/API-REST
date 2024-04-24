@@ -20,19 +20,7 @@
                         "name": "Un usuario registrado en la Base de Datos que ya está logueado",
                         "line": 4,
                         "match": {
-                            "location": "getAllUsers_test.go:36"
-                        },
-                        "result": {
-                            "status": "passed",
-                            "duration": 996400
-                        }
-                    },
-                    {
-                        "keyword": "And ",
-                        "name": "suministra el token JWT en la cabecera Authentication",
-                        "line": 5,
-                        "match": {
-                            "location": "getAllUsers_test.go:39"
+                            "location": "getAllUsers_test.go:60"
                         },
                         "result": {
                             "status": "passed",
@@ -40,15 +28,27 @@
                         }
                     },
                     {
+                        "keyword": "And ",
+                        "name": "suministra el token JWT en la cabecera Authentication",
+                        "line": 5,
+                        "match": {
+                            "location": "getAllUsers_test.go:63"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 8316100
+                        }
+                    },
+                    {
                         "keyword": "When ",
                         "name": "El usuario hace la peticion GET a la ruta \"/users\"",
                         "line": 8,
                         "match": {
-                            "location": "getAllUsers_test.go:49"
+                            "location": "getAllUsers_test.go:73"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 15000900
+                            "duration": 7833900
                         }
                     },
                     {
@@ -56,11 +56,11 @@
                         "name": "La API responde con la lista de usuarios",
                         "line": 9,
                         "match": {
-                            "location": "getAllUsers_test.go:78"
+                            "location": "getAllUsers_test.go:102"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 1002400
+                            "duration": 0
                         }
                     },
                     {
@@ -68,7 +68,7 @@
                         "name": "La API responde con un Status Code 200",
                         "line": 10,
                         "match": {
-                            "location": "getAllUsers_test.go:121"
+                            "location": "getAllUsers_test.go:145"
                         },
                         "result": {
                             "status": "passed",
@@ -90,7 +90,7 @@
                         "name": "Un usuario registrado en la Base de Datos que ya está logueado",
                         "line": 4,
                         "match": {
-                            "location": "getAllUsers_test.go:36"
+                            "location": "getAllUsers_test.go:60"
                         },
                         "result": {
                             "status": "passed",
@@ -102,11 +102,11 @@
                         "name": "suministra el token JWT en la cabecera Authentication",
                         "line": 5,
                         "match": {
-                            "location": "getAllUsers_test.go:39"
+                            "location": "getAllUsers_test.go:63"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 998700
+                            "duration": 13790400
                         }
                     },
                     {
@@ -114,11 +114,11 @@
                         "name": "El usuario hace la peticion GET a la ruta \"/users?offset=1\u0026pagesize=2\"",
                         "line": 13,
                         "match": {
-                            "location": "getAllUsers_test.go:49"
+                            "location": "getAllUsers_test.go:73"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 7826700
+                            "duration": 21640400
                         }
                     },
                     {
@@ -126,7 +126,7 @@
                         "name": "La API responde con la lista de usuarios",
                         "line": 14,
                         "match": {
-                            "location": "getAllUsers_test.go:78"
+                            "location": "getAllUsers_test.go:102"
                         },
                         "result": {
                             "status": "passed",
@@ -138,7 +138,7 @@
                         "name": "La API responde con un Status Code 200",
                         "line": 15,
                         "match": {
-                            "location": "getAllUsers_test.go:121"
+                            "location": "getAllUsers_test.go:145"
                         },
                         "result": {
                             "status": "passed",
@@ -160,7 +160,7 @@
                         "name": "Un usuario registrado en la Base de Datos que ya está logueado",
                         "line": 4,
                         "match": {
-                            "location": "getAllUsers_test.go:36"
+                            "location": "getAllUsers_test.go:60"
                         },
                         "result": {
                             "status": "passed",
@@ -172,11 +172,11 @@
                         "name": "suministra el token JWT en la cabecera Authentication",
                         "line": 5,
                         "match": {
-                            "location": "getAllUsers_test.go:39"
+                            "location": "getAllUsers_test.go:63"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 998900
+                            "duration": 12136600
                         }
                     },
                     {
@@ -184,7 +184,7 @@
                         "name": "el token JWT no es valido",
                         "line": 18,
                         "match": {
-                            "location": "getAllUsers_test.go:73"
+                            "location": "getAllUsers_test.go:97"
                         },
                         "result": {
                             "status": "passed",
@@ -196,11 +196,11 @@
                         "name": "El usuario hace la peticion GET a la ruta \"/users\"",
                         "line": 19,
                         "match": {
-                            "location": "getAllUsers_test.go:49"
+                            "location": "getAllUsers_test.go:73"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 7742800
+                            "duration": 3897800
                         }
                     },
                     {
@@ -208,7 +208,7 @@
                         "name": "La API responde con un mensaje de error",
                         "line": 20,
                         "match": {
-                            "location": "getAllUsers_test.go:113"
+                            "location": "getAllUsers_test.go:137"
                         },
                         "result": {
                             "status": "passed",
@@ -220,7 +220,7 @@
                         "name": "La API responde con un Status Code 401",
                         "line": 21,
                         "match": {
-                            "location": "getAllUsers_test.go:121"
+                            "location": "getAllUsers_test.go:145"
                         },
                         "result": {
                             "status": "passed",
@@ -242,7 +242,7 @@
                         "name": "Un usuario registrado en la Base de Datos que ya está logueado",
                         "line": 4,
                         "match": {
-                            "location": "getAllUsers_test.go:36"
+                            "location": "getAllUsers_test.go:60"
                         },
                         "result": {
                             "status": "passed",
@@ -254,11 +254,11 @@
                         "name": "suministra el token JWT en la cabecera Authentication",
                         "line": 5,
                         "match": {
-                            "location": "getAllUsers_test.go:39"
+                            "location": "getAllUsers_test.go:63"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 0
+                            "duration": 7714000
                         }
                     },
                     {
@@ -266,7 +266,7 @@
                         "name": "el token JWT no es valido",
                         "line": 24,
                         "match": {
-                            "location": "getAllUsers_test.go:73"
+                            "location": "getAllUsers_test.go:97"
                         },
                         "result": {
                             "status": "passed",
@@ -278,11 +278,11 @@
                         "name": "El usuario hace la peticion GET a la ruta \"/users?offset=1\u0026pagesize=2\"",
                         "line": 25,
                         "match": {
-                            "location": "getAllUsers_test.go:49"
+                            "location": "getAllUsers_test.go:73"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 7670300
+                            "duration": 5831000
                         }
                     },
                     {
@@ -290,7 +290,7 @@
                         "name": "La API responde con un mensaje de error",
                         "line": 26,
                         "match": {
-                            "location": "getAllUsers_test.go:113"
+                            "location": "getAllUsers_test.go:137"
                         },
                         "result": {
                             "status": "passed",
@@ -302,7 +302,7 @@
                         "name": "La API responde con un Status Code 401",
                         "line": 27,
                         "match": {
-                            "location": "getAllUsers_test.go:121"
+                            "location": "getAllUsers_test.go:145"
                         },
                         "result": {
                             "status": "passed",

@@ -1,6 +1,7 @@
 package deleteuser
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -31,12 +32,35 @@ func setConfigs() {
 	deleteUserUrl = JsonReader("../config-file.json", "API.deleteUserUrl")
 }
 
+// Función para obtener un jwt Token del servidor
+func getToken() string {
+	resp, err := resty.New().R().
+		SetHeader("Content-Type", "application/json").
+		SetBody(JsonReader("../login/request-body.json", "data")).
+		Post(JsonReader("../config-file.json", "API.loginUserUrl"))
+	if err != nil {
+		return ""
+	}
+
+	var tokenResp map[string]string
+	if err := json.Unmarshal(resp.Body(), &tokenResp); err != nil {
+		return ""
+	}
+	token, exists := tokenResp["token"]
+	if !exists {
+		return ""
+	}
+
+	// Retornar solo el token sin el {"token":
+	return token
+}
+
 func unUsuarioRegistradoEnLaBaseDeDatosQueYaEstLogueado() error {
 	return nil
 }
 
 func suministraElTokenJWTEnLaCabeceraAuthentication() error {
-	authToken = JsonReader("../config-file.json", "API.token")
+	authToken = getToken()
 
 	if authToken == "" {
 		return fmt.Errorf("el usuario no mandó ningun token")

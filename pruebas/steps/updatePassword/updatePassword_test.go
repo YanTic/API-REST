@@ -1,6 +1,7 @@
 package updatepassword
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -32,6 +33,29 @@ func setConfigs() {
 	updatePasswordUrl = JsonReader("../config-file.json", "API.updatePasswordUrl")
 }
 
+// Función para obtener un jwt Token de recuperacion del servidor
+func getToken() string {
+	resp, err := resty.New().R().
+		SetHeader("Content-Type", "application/json").
+		SetBody(JsonReader("../recoverPassword/request-body.json", "data")).
+		Patch(JsonReader("../config-file.json", "API.recoverPasswordUrl"))
+	if err != nil {
+		return ""
+	}
+
+	var tokenResp map[string]string
+	if err := json.Unmarshal(resp.Body(), &tokenResp); err != nil {
+		return ""
+	}
+	token, exists := tokenResp["token"]
+	if !exists {
+		return ""
+	}
+
+	// Retornar solo el token sin el {"token":
+	return token
+}
+
 func unUsuarioRegistradoEnLaBaseDeDatosQueYaEstLogueado() error {
 	return nil
 }
@@ -42,7 +66,7 @@ func enviaEnElRequestbodyUnJSONConLaContrasea() error {
 }
 
 func suministraElTokenJWTDeRecuperacinEnLaCabeceraAuthentication() error {
-	authToken = JsonReader("../config-file.json", "API.recoveryToken")
+	authToken = getToken()
 
 	if authToken == "" {
 		return fmt.Errorf("el usuario no mandó ningun token")
