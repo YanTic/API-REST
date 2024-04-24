@@ -144,10 +144,16 @@ func TestMain(m *testing.M) {
 		return
 	}
 
+	f, err := os.Create("../../reports/reports-json/report_updateUser.json")
+	if err != nil {
+		fmt.Print("error at creating report: ", err)
+	}
+
 	// SE EJECUTAN LAS PRUEBAS
 	opts := godog.Options{
-		Format: "progress",
+		Format: "cucumber",
 		Paths:  []string{"../../features/UpdateUser.feature"}, // Se especifica que feature usa este "steptest"
+		Output: f,
 	}
 
 	status := godog.TestSuite{

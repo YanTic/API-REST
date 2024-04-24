@@ -1,0 +1,316 @@
+[
+    {
+        "uri": "../../features/GetAllUsers.feature",
+        "id": "la-api-permite-la-opción-de-que-el-usuario-puede-obtener-una-lista-de-todos-los-usuarios",
+        "keyword": "Feature",
+        "name": "La API permite la opción de que el usuario puede obtener una lista de todos los usuarios",
+        "description": "",
+        "line": 1,
+        "elements": [
+            {
+                "id": "la-api-permite-la-opción-de-que-el-usuario-puede-obtener-una-lista-de-todos-los-usuarios;el-usuario-pide-todos-los-usuarios-exitosamente",
+                "keyword": "Scenario",
+                "name": "El usuario pide todos los usuarios exitosamente",
+                "description": "",
+                "line": 7,
+                "type": "scenario",
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "Un usuario registrado en la Base de Datos que ya está logueado",
+                        "line": 4,
+                        "match": {
+                            "location": "getAllUsers_test.go:36"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 996400
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "suministra el token JWT en la cabecera Authentication",
+                        "line": 5,
+                        "match": {
+                            "location": "getAllUsers_test.go:39"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 0
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "El usuario hace la peticion GET a la ruta \"/users\"",
+                        "line": 8,
+                        "match": {
+                            "location": "getAllUsers_test.go:49"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 15000900
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "La API responde con la lista de usuarios",
+                        "line": 9,
+                        "match": {
+                            "location": "getAllUsers_test.go:78"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 1002400
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "La API responde con un Status Code 200",
+                        "line": 10,
+                        "match": {
+                            "location": "getAllUsers_test.go:121"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 0
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "la-api-permite-la-opción-de-que-el-usuario-puede-obtener-una-lista-de-todos-los-usuarios;el-usuario-pide-todos-los-usuarios-con-paginacion-exitosamente",
+                "keyword": "Scenario",
+                "name": "El usuario pide todos los usuarios con paginacion exitosamente",
+                "description": "",
+                "line": 12,
+                "type": "scenario",
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "Un usuario registrado en la Base de Datos que ya está logueado",
+                        "line": 4,
+                        "match": {
+                            "location": "getAllUsers_test.go:36"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 0
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "suministra el token JWT en la cabecera Authentication",
+                        "line": 5,
+                        "match": {
+                            "location": "getAllUsers_test.go:39"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 998700
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "El usuario hace la peticion GET a la ruta \"/users?offset=1\u0026pagesize=2\"",
+                        "line": 13,
+                        "match": {
+                            "location": "getAllUsers_test.go:49"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 7826700
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "La API responde con la lista de usuarios",
+                        "line": 14,
+                        "match": {
+                            "location": "getAllUsers_test.go:78"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 0
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "La API responde con un Status Code 200",
+                        "line": 15,
+                        "match": {
+                            "location": "getAllUsers_test.go:121"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 0
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "la-api-permite-la-opción-de-que-el-usuario-puede-obtener-una-lista-de-todos-los-usuarios;el-usuario-pide-todos-los-usuarios-y-el-jwt-token-no-es-valido",
+                "keyword": "Scenario",
+                "name": "El usuario pide todos los usuarios y el JWT token no es valido",
+                "description": "",
+                "line": 17,
+                "type": "scenario",
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "Un usuario registrado en la Base de Datos que ya está logueado",
+                        "line": 4,
+                        "match": {
+                            "location": "getAllUsers_test.go:36"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 0
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "suministra el token JWT en la cabecera Authentication",
+                        "line": 5,
+                        "match": {
+                            "location": "getAllUsers_test.go:39"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 998900
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "el token JWT no es valido",
+                        "line": 18,
+                        "match": {
+                            "location": "getAllUsers_test.go:73"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 0
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "El usuario hace la peticion GET a la ruta \"/users\"",
+                        "line": 19,
+                        "match": {
+                            "location": "getAllUsers_test.go:49"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 7742800
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "La API responde con un mensaje de error",
+                        "line": 20,
+                        "match": {
+                            "location": "getAllUsers_test.go:113"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 0
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "La API responde con un Status Code 401",
+                        "line": 21,
+                        "match": {
+                            "location": "getAllUsers_test.go:121"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 0
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "la-api-permite-la-opción-de-que-el-usuario-puede-obtener-una-lista-de-todos-los-usuarios;el-usuario-pide-todos-los-usuarios-con-paginacion-y-el-jwt-token-no-es-valido",
+                "keyword": "Scenario",
+                "name": "El usuario pide todos los usuarios con paginacion y el JWT token no es valido",
+                "description": "",
+                "line": 23,
+                "type": "scenario",
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "Un usuario registrado en la Base de Datos que ya está logueado",
+                        "line": 4,
+                        "match": {
+                            "location": "getAllUsers_test.go:36"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 0
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "suministra el token JWT en la cabecera Authentication",
+                        "line": 5,
+                        "match": {
+                            "location": "getAllUsers_test.go:39"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 0
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "el token JWT no es valido",
+                        "line": 24,
+                        "match": {
+                            "location": "getAllUsers_test.go:73"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 0
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "El usuario hace la peticion GET a la ruta \"/users?offset=1\u0026pagesize=2\"",
+                        "line": 25,
+                        "match": {
+                            "location": "getAllUsers_test.go:49"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 7670300
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "La API responde con un mensaje de error",
+                        "line": 26,
+                        "match": {
+                            "location": "getAllUsers_test.go:113"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 0
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "La API responde con un Status Code 401",
+                        "line": 27,
+                        "match": {
+                            "location": "getAllUsers_test.go:121"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 0
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+]

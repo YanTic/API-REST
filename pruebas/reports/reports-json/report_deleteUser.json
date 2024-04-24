@@ -1,0 +1,164 @@
+[
+    {
+        "uri": "../../features/DeleteUser.feature",
+        "id": "la-api-permite-a-un-usuario-eliminar-un-usuario",
+        "keyword": "Feature",
+        "name": "La API permite a un usuario eliminar un usuario",
+        "description": "",
+        "line": 1,
+        "elements": [
+            {
+                "id": "la-api-permite-a-un-usuario-eliminar-un-usuario;el-usuario-elimina-un-user-exitosamente",
+                "keyword": "Scenario",
+                "name": "El usuario elimina un user exitosamente",
+                "description": "",
+                "line": 7,
+                "type": "scenario",
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "Un usuario registrado en la Base de Datos que ya está logueado",
+                        "line": 4,
+                        "match": {
+                            "location": "deleteUser_test.go:35"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 0
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "suministra el token JWT en la cabecera Authentication",
+                        "line": 5,
+                        "match": {
+                            "location": "deleteUser_test.go:38"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 0
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "El usuario hace la peticion DELETE a la ruta \"/users/{id}\"",
+                        "line": 8,
+                        "match": {
+                            "location": "deleteUser_test.go:48"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 18712200
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "La API responde con un mensaje de exito",
+                        "line": 9,
+                        "match": {
+                            "location": "deleteUser_test.go:86"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 0
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "La API responde con un Status Code 200",
+                        "line": 10,
+                        "match": {
+                            "location": "deleteUser_test.go:71"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 0
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "la-api-permite-a-un-usuario-eliminar-un-usuario;el-usuario-elimina-un-user-y-el-jwt-token-no-es-valido",
+                "keyword": "Scenario",
+                "name": "El usuario elimina un user y el JWT token no es valido",
+                "description": "",
+                "line": 12,
+                "type": "scenario",
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "Un usuario registrado en la Base de Datos que ya está logueado",
+                        "line": 4,
+                        "match": {
+                            "location": "deleteUser_test.go:35"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 0
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "suministra el token JWT en la cabecera Authentication",
+                        "line": 5,
+                        "match": {
+                            "location": "deleteUser_test.go:38"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 0
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "el token JWT no es valido",
+                        "line": 13,
+                        "match": {
+                            "location": "deleteUser_test.go:66"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 524400
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "El usuario hace la peticion DELETE a la ruta \"/users/{id}\"",
+                        "line": 14,
+                        "match": {
+                            "location": "deleteUser_test.go:48"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 10238100
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "La API responde con un mensaje de error",
+                        "line": 15,
+                        "match": {
+                            "location": "deleteUser_test.go:78"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 0
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "La API responde con un Status Code 401",
+                        "line": 16,
+                        "match": {
+                            "location": "deleteUser_test.go:71"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 996700
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+]

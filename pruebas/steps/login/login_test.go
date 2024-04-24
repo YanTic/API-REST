@@ -141,9 +141,19 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 func TestMain(m *testing.M) {
 	setConfigs()
 
+	f, err := os.Create("../../reports/reports-json/report_login.json")
+	if err != nil {
+		fmt.Println("error opening report file:", err)
+		return
+	}
+	defer f.Close()
+
 	opts := godog.Options{
-		Format: "progress",
+		// Format: "progress",
+		// Format: "pretty,cucumber:../../reports/report.json",
+		Format: "cucumber",
 		Paths:  []string{"../../features/Login.feature"}, // Se especifica que feature usa este "steptest"
+		Output: f,
 	}
 
 	status := godog.TestSuite{
