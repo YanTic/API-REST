@@ -1,12 +1,12 @@
-FROM mysql:latest
-
-ENV MYSQL_USER=julian
-ENV MYSQL_PASSWORD=12345
-ENV MYSQL_ROOT_PASSWORD=12345
-
+#UTILIZAMOS LA ULTIMA IMAGEN DE POSTGRES
+FROM postgres:latest
+#ESTABLECEMOS LAS VARIABLES DE ENTONRO
+ENV POSTGRES_USER andres
+ENV POSTGRES_PASSWORD 1234
+#ESTABLECEMOS EL DIRECTORIO DE TRABAJO
 WORKDIR /app
+#COPIAMOS LAS INSTRUCCIONES
+COPY ./init.sql /docker-entrypoint-initdb.d/
+#CAMBIA LOS PERMISOS DE EJECUCIÓN 
+RUN chmod 755 /docker-entrypoint-initdb.d/init.sql
 
-# Se copia el archivo de inicializacion de la database
-COPY init.sql /docker-entrypoint-initdb.d/
-
-EXPOSE 3306

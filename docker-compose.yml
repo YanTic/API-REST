@@ -1,16 +1,237 @@
-version: '3'
+version: "2.8"
 services:
+  # SERVICIO DE LA BASE DE DATOS
   database:
     build: ./database
-    healthcheck: # Se verifica que la bd ya esté lista para ejecutar el contenedor del servidor
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -pexample"]
-      interval: 10s
-      retries: 5
-  server:
-    build: ./server
     ports:
-      - 80:80
+      - "5432:5432"
+    expose:
+      - "5432"
+    networks:
+      - traefik-net
+
+  # SERVICIO DEL PRODUCTOR
+  server:
+    build: ./go_server
+    ports:
+      - "9090:9090"
+    expose:
+      - "9090"
+    environment:
+      - DATABASE=database
+      - NATS_SERVER=nats
+      - NATS_SUBJECT=MicroservicesLogs
     depends_on:
       - database
+      - nats
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.server.rule=Path(`/server`)"
+      - "traefik.http.services.server.loadbalancer.server.port=9090"
+    networks:
+      - traefik-net
+
+  # SERVICIO DEL CONSUMIDOR
+  cliente:
+    build: ./logs-manage-api
+    depends_on:
+      - log_database
+      - nats
     environment:
-      - DATABASE=database:3306
+      - NATS_SERVER=nats
+      - DATABASE=log_database
+      - DATABASE_PORT=3306
+      - ROOT_PASSWORD=andres_1
+      - PUERTO=9091
+    ports:
+      - "9091:9091"
+    expose:
+      - "9091"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cliente.rule=Path(`/cliente`)"
+      - "traefik.http.services.cliente.loadbalancer.server.port=9091"
+    networks:
+      - traefik-net
+
+  # SERVICIO DE NATS
+  nats:
+    image: nats:latest
+    ports:
+      - "4222:4222"
+    expose:
+      - "4222"
+    networks:
+      - traefik-net
+
+  # SERVICIO DE LA BASE DE DATOS DE LOS LOGS
+  log_database:
+    build: ./logs-database
+    ports:
+      - "3307:3306"
+    expose:
+      - "3306"
+    networks:
+      - traefik-net
+
+  # SERVICIO DE JENKINS
+  # jenkins:
+  #   build: ./jenkins
+  #   ports:
+  #     - "6432:8080"
+  #     - "50000:50000"
+  #   environment:
+  #     - USER_SERVER_HOST=server
+  #     - LOGS_HOST=cliente
+  #     - LOGS_DATABASE=log_database
+  #     - HEALTH_HOST=health_server
+  #     - USER_PROFILE_HOST=user_profile
+  #     - NOTIFICATION_HOST=notification_server
+  #   networks:
+  #     - traefik-net
+
+  # SERVICIO DE HEALTH DATABASE
+  health_database:
+    image: mysql:latest
+    ports:
+      - "3308:3306"
+    expose:
+      - "3308"
+    environment:
+      MYSQL_DATABASE: applications
+      MYSQL_ROOT_PASSWORD: andres_1
+    networks:
+      - traefik-net
+
+  # SERVICIO DE HEALTH SERVER
+  health_server:
+    build: ./health_server
+    ports:
+      - "9092:9092"
+    expose:
+      - "9092"
+    depends_on:
+      - health_database
+    environment:
+      - DB_HOST=health_database
+      - NATS_SERVER=nats
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.health_server.rule=Path(`/health_server`)"
+      - "traefik.http.services.health_server.loadbalancer.server.port=9092"
+    networks:
+      - traefik-net
+
+  user_profile:
+    build: ./users_api
+    ports:
+      - "9094:9094"
+    expose:
+      - "9094"
+    depends_on:
+      - nats
+      - user_profile_database
+    environment:
+      - DATABASE=user_profile_database
+      - NATS_SERVER=nats
+      - NATS_SUBJECT=MicroservicesLogs
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.user_profile.rule=Path(`/user_profile`)"
+      - "traefik.http.services.user_profile.loadbalancer.server.port=9094"
+    networks:
+      - traefik-net
+
+  user_profile_database:
+    image: mysql:latest
+    ports:
+      - "3309:3306"
+    expose:
+      - "3309"
+    environment:
+      MYSQL_DATABASE: users
+      MYSQL_ROOT_PASSWORD: andres_1
+    networks:
+      - traefik-net
+
+  notification_server:
+    build: ./notification
+    ports:
+      - "9096:9096"
+    expose:
+      - "9096"
+    depends_on:
+      - nats
+      - notification_database
+    environment:
+      - DB_NOTIFICATION_HOST=notification_database
+      - NATS_SERVER=nats
+      - NATS_SUBJECT=MicroservicesLogs
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.notification_server.rule=Path(`/notification_server`)"
+      - "traefik.http.services.notification_server.loadbalancer.server.port=9096"
+    networks:
+      - traefik-net
+
+  notification_database:
+    image: mysql:latest
+    ports:
+      - "3310:3306"
+    expose:
+      - "3310"
+    environment:
+      MYSQL_DATABASE: notifications
+      MYSQL_ROOT_PASSWORD: andres_1
+    networks:
+      - traefik-net
+
+  # SERVICIO DE TRAEFIK
+  traefik:
+    image: traefik:v2.5
+    container_name: traefik
+    command:
+      - "--api.insecure=true" # Exponer la interfaz web para Traefik (no usar en producción sin seguridad adecuada)
+      - "--providers.docker=true" # Habilitar proveedor Docker
+      - "--entrypoints.web.address=:80" # Definir un entrypoint en el puerto 80
+    ports:
+      - "80:80" # Puerto para acceder a los servicios
+      - "8080:8080" # Puerto para la interfaz web de Traefik
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Necesario para comunicarse con Docker
+    networks:
+      - traefik-net
+
+networks:
+  traefik-net:
+    driver: bridge
+
+
+  #SERVICIO DE PROMETHEUS
+  # prometheus:
+  #   image: prom/prometheus:latest # Usa la imagen oficial de Prometheus
+  #   volumes:
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml # Monta el archivo de configuración
+  #   ports:
+  #     - "9093:9090" # Puerto para acceder a la interfaz de Prometheus
+
+  # gateway_server:
+  #   build: ./gateway
+  #   ports:
+  #     - "9095:9095"
+  #   expose:
+  #     - "9095"
+  #   depends_on:
+  #     - nats
+  #     - user_profile
+  #     - notification_server
+  #     - server
+  #     - cliente
+  #     - health_server
+  #   environment:
+  #     - USER_SERVER_HOST=server
+  #     - LOGS_HOST=cliente
+  #     - HEALTH_HOST=health_server
+  #     - USER_PROFILE_HOST=user_profile
+  #     - NOTIFICATION_HOST=notification_server
+  #     - NATS_SERVER=nats
