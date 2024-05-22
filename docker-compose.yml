@@ -1,4 +1,4 @@
-version: "2.8"
+version: "1"
 services:
   # SERVICIO DE LA BASE DE DATOS
   database:
@@ -26,7 +26,7 @@ services:
       - nats
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.server.rule=Path(`/server`)"
+      - "traefik.http.routers.server.rule=Host(`server.localhost`)"
       - "traefik.http.services.server.loadbalancer.server.port=9090"
     networks:
       - traefik-net
@@ -49,7 +49,7 @@ services:
       - "9091"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.cliente.rule=Path(`/cliente`)"
+      - "traefik.http.routers.cliente.rule=Host(`cliente.localhost`)"
       - "traefik.http.services.cliente.loadbalancer.server.port=9091"
     networks:
       - traefik-net
@@ -117,7 +117,7 @@ services:
       - NATS_SERVER=nats
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.health_server.rule=Path(`/health_server`)"
+      - "traefik.http.routers.health_server.rule=Host(`health_server.localhost`)"
       - "traefik.http.services.health_server.loadbalancer.server.port=9092"
     networks:
       - traefik-net
@@ -137,7 +137,7 @@ services:
       - NATS_SUBJECT=MicroservicesLogs
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.user_profile.rule=Path(`/user_profile`)"
+      - "traefik.http.routers.user_profile.rule=Host(`user_profile.localhost`)"
       - "traefik.http.services.user_profile.loadbalancer.server.port=9094"
     networks:
       - traefik-net
@@ -169,7 +169,7 @@ services:
       - NATS_SUBJECT=MicroservicesLogs
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.notification_server.rule=Path(`/notification_server`)"
+      - "traefik.http.routers.notification_server.rule=Host(`notification_server.localhost`)"
       - "traefik.http.services.notification_server.loadbalancer.server.port=9096"
     networks:
       - traefik-net
@@ -214,24 +214,3 @@ networks:
   #     - ./prometheus.yml:/etc/prometheus/prometheus.yml # Monta el archivo de configuración
   #   ports:
   #     - "9093:9090" # Puerto para acceder a la interfaz de Prometheus
-
-  # gateway_server:
-  #   build: ./gateway
-  #   ports:
-  #     - "9095:9095"
-  #   expose:
-  #     - "9095"
-  #   depends_on:
-  #     - nats
-  #     - user_profile
-  #     - notification_server
-  #     - server
-  #     - cliente
-  #     - health_server
-  #   environment:
-  #     - USER_SERVER_HOST=server
-  #     - LOGS_HOST=cliente
-  #     - HEALTH_HOST=health_server
-  #     - USER_PROFILE_HOST=user_profile
-  #     - NOTIFICATION_HOST=notification_server
-  #     - NATS_SERVER=nats
