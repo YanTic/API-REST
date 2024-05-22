@@ -1,4 +1,4 @@
-version: "1"
+version: "3"
 services:
   # SERVICIO DE LA BASE DE DATOS
   database:
@@ -28,6 +28,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.server.rule=Host(`server.localhost`)"
       - "traefik.http.services.server.loadbalancer.server.port=9090"
+      - "traefik.docker.network=traefik-net"
     networks:
       - traefik-net
 
@@ -51,6 +52,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.cliente.rule=Host(`cliente.localhost`)"
       - "traefik.http.services.cliente.loadbalancer.server.port=9091"
+      - "traefik.docker.network=traefik-net"
     networks:
       - traefik-net
 
@@ -75,20 +77,20 @@ services:
       - traefik-net
 
   # SERVICIO DE JENKINS
-  # jenkins:
-  #   build: ./jenkins
-  #   ports:
-  #     - "6432:8080"
-  #     - "50000:50000"
-  #   environment:
-  #     - USER_SERVER_HOST=server
-  #     - LOGS_HOST=cliente
-  #     - LOGS_DATABASE=log_database
-  #     - HEALTH_HOST=health_server
-  #     - USER_PROFILE_HOST=user_profile
-  #     - NOTIFICATION_HOST=notification_server
-  #   networks:
-  #     - traefik-net
+  jenkins:
+    build: ./jenkins
+    ports:
+      - "6432:8080"
+      - "50000:50000"
+    environment:
+      - USER_SERVER_HOST=server
+      - LOGS_HOST=cliente
+      - LOGS_DATABASE=log_database
+      - HEALTH_HOST=health_server
+      - USER_PROFILE_HOST=user_profile
+      - NOTIFICATION_HOST=notification_server
+    networks:
+      - traefik-net
 
   # SERVICIO DE HEALTH DATABASE
   health_database:
@@ -119,6 +121,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.health_server.rule=Host(`health_server.localhost`)"
       - "traefik.http.services.health_server.loadbalancer.server.port=9092"
+      - "traefik.docker.network=traefik-net"
     networks:
       - traefik-net
 
@@ -139,6 +142,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.user_profile.rule=Host(`user_profile.localhost`)"
       - "traefik.http.services.user_profile.loadbalancer.server.port=9094"
+      - "traefik.docker.network=traefik-net"
     networks:
       - traefik-net
 
@@ -171,6 +175,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.notification_server.rule=Host(`notification_server.localhost`)"
       - "traefik.http.services.notification_server.loadbalancer.server.port=9096"
+      - "traefik.docker.network=traefik-net"
     networks:
       - traefik-net
 
@@ -199,6 +204,11 @@ services:
       - "8080:8080" # Puerto para la interfaz web de Traefik
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock # Necesario para comunicarse con Docker
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     networks:
       - traefik-net
 
