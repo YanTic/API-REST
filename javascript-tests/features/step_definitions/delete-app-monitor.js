@@ -8,7 +8,7 @@ let monitorBody = {
   name: "deleteion",
   endpoint: "http://localhost:9090/api/v1/health",
   frequency: "10",
-  email: "miccroservicios@gmail.com",
+  email: "poutypvp@gmail.com",
 };
 let response;
 let statusCode;

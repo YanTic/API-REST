@@ -6,7 +6,7 @@ const faker = require("@faker-js/faker");
 let baseUrl = require("../../configuration/routes").notification;
 
 let notification = {
-  target: "miccroservicios@gmail.com",
+  target: "poutypvp@gmail.com",
   subject: "test desde postman",
   message: "mensaje de test",
 };

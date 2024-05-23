@@ -26,16 +26,16 @@ def create_sample_data():
     Session = sessionmaker(bind=engine)
     session = Session()
     #aplicatoin 1
-    application = Application(name="App1", endpoint="http://server:9090/api/v1/health", frequency="10", email="poutypvp@gmail.com")
+    application = Application(name="App1", endpoint="http://server:9090/api/v1/health", frequency="10", email="microservicio1@gmail.com")
     session.add(application)
     # Application 2
-    application2 = Application(name="App2", endpoint="http://cliente:9091/api/v1/health", frequency="15", email="poutypvp@gmail.com")
+    application2 = Application(name="App2", endpoint="http://cliente:9091/api/v1/health", frequency="15", email="microservicio2@gmail.com")
     session.add(application2)
     # Application 3
-    application3 = Application(name="App3", endpoint="http://user_profile:9094/api/v1/health", frequency="20", email="poutypvp@gmail.com")
+    application3 = Application(name="App3", endpoint="http://user_profile:9094/api/v1/health", frequency="20", email="microservicio3@gmail.com")
     session.add(application3)
     # Application 4
-    application4 = Application(name="App4", endpoint="http://notification_server:9096/api/v1/health", frequency="25", email="poutypvp@gmail.com")
+    application4 = Application(name="App4", endpoint="http://notification_server:9096/api/v1/health", frequency="25", email="microservicio4@gmail.com")
     session.add(application4)
     
     
